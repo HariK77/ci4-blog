@@ -69,21 +69,21 @@ $routes->group('/dashboard', ['filter' => 'admin'], function ($routes) {
     $routes->get('categories', 'Admin\CategoryController::index');
     $routes->post('categories/get', 'Admin\CategoryController::get');
     $routes->get('categories/create', 'Admin\CategoryController::create');
-    $routes->post('categories', 'Admin\CategorysController::save');
+    $routes->post('categories', 'Admin\CategoryController::store');
     $routes->get('categories/(:any)', 'Admin\CategoryController::show/$1');
     $routes->patch('categories/(:any)', 'Admin\CategoryController::update/$1');
     $routes->delete('categories/(:any)', 'Admin\CategoryController::delete/$1');
 
     $routes->get('users', 'Admin\UserController::index');
     $routes->get('users/create', 'Admin\UserController::create');
-    $routes->post('users', 'Admin\UsersController::save');
+    $routes->post('users', 'Admin\UsersController::store');
     $routes->get('users/(:any)', 'Admin\UserController::show/$1');
     $routes->patch('users/(:any)', 'Admin\UserController::update/$1');
     $routes->delete('users/(:any)', 'Admin\UserController::delete/$1');
 
     $routes->get('posts', 'Admin\PostController::index');
     $routes->get('posts/create', 'Admin\PostController::create');
-    $routes->post('posts', 'Admin\PostController::save');
+    $routes->post('posts', 'Admin\PostController::store');
     $routes->get('posts/(:any)', 'Admin\PostController::show/$1');
     $routes->patch('posts/(:any)', 'Admin\PostController::update/$1');
     $routes->delete('posts/(:any)', 'Admin\PostController::delete/$1');

@@ -27,13 +27,38 @@
         <div class="card-header">
             <div class="d-flex">
                 <h5>Categories</h5>
-                <button class="btn btn-primary ml-auto" id="add-form">Add Category</button>
+                <button class="btn btn-primary ml-auto" data-toggle="modal" data-target="#modal" id="add-form">Add Category</button>
             </div>
         </div>
         <div class="card-body">
             <table id="datatable" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
 
             </table>
+        </div>
+    </div>
+
+    <div id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title mt-0" id="modalLabel">Add Category</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group row">
+                        <label for="name" class="col-sm-2 col-form-label">Name</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" type="text" value="" id="name">
+                            <div class="invalid-feedback">Test Message</div>
+                        </div>
+                        <input type="hidden" name="category_id" value="" id="category_id">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary waves-effect waves-light" id="save-btn">Add</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -60,11 +85,22 @@
 
 <script>
     var categoriesTable = '';
+
+    // csrf_token: document.querySelector('meta[name="X-CSRF-TOKEN"]').content
+
     $(document).ready(function() {
 
         categoriesTable = $('#datatable').DataTable({
+            length: 10,
             processing: true,
             serverSide: true,
+            // cache: false,
+            // destroy: true,
+            // order: [0],
+            // searching: false,
+            // ordering: false,
+            // info: false,
+            // lengthChange: false,
             columns: [{
                     title: 'Id',
                     data: 'id'
@@ -88,21 +124,161 @@
                 url: '<?= base_url('dashboard/categories/get') ?>',
                 type: 'POST',
                 data: {
-                    csrf_token: document.querySelector('meta[name="X-CSRF-TOKEN"]').content
+                    '<?= csrf_token() ?>': '<?= csrf_hash() ?>'
                 },
+                // success: function (response) {
+                //     console.log(response);
+                //     return data;
+                // }
             },
-            length: 3,
+            columnDefs: [
+                {
+                    orderable: false,
+                    targets: [2]
+                },
+                {
+                    searchable: false,
+                    targets: [0, 2]
+                }
+            ],
+            language: {
+                info: "Showing page _PAGE_ of _PAGES_",
+                infoFiltered: "",
+                // emptyTable: "No data available in table",
+                // info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                // infoEmpty: "No entries found",
+                // infoFiltered: "(filtered1 from _MAX_ total entries)",
+                // lengthMenu: "Show _MENU_ entries",
+                // search: "Search",
+                // zeroRecords: "No matching records found",
+                // searc: "_INPUT_",
+                // searchPlaceholde: "Search from below results.",
+                // paginate: {
+                //     previous: "Prev",
+                //     next: "Next",
+                //     last: "Last",
+                //     first: "First"
+                // }
+            },
+            initComplete: function (Settings, json) {
+                
+            },
+            fnDrawCallback: function (oSettings) {
+                console.log(oSettings);
+            },
+
         });
 
     });
 
+    $('#save-btn').on('click', function() {
+        let params = {
+            name: $('#name').val(),
+            '<?= csrf_token() ?>': '<?= csrf_hash() ?>'
+        }
+
+        let url = '<?= base_url('/dashboard/categories') ?>';
+
+        if ($('#category_id').val()) {
+            url = '<?= base_url('/dashboard/categories') ?>/' + $('#category_id').val();
+            params._method = 'PATCH';
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: params,
+            dataType: 'json',
+            beforeSend: function() {
+                $('.is-invalid').remove();
+                $("#save-btn").prop('disabled', true);
+                $("#save-btn").text('Sending..');
+            },
+            success: function(response) {
+                updateSubmitBtnText();
+                $('#modal').modal('toggle');
+                $('#name').val('');
+                $('#datatable').dataTable().fnDraw(false);
+            },
+            error: function(response) {
+                let errors = response.responseJSON.messages.errors;
+                updateSubmitBtnText();
+                for (let error in errors) {
+                    let element = document.getElementById(error);
+                    element.classList.add('is-invalid');
+                    element.nextElementSibling.innerHTML = errors[error];
+                }
+                Array.from(document.querySelectorAll('.is-invalid')).forEach(errorElement => {
+                    errorElement.addEventListener('change', e => e.target.classList.remove('is-invalid'));
+                })
+            }
+        });
+
+    })
+
     $(document).on('click', '.edit-category', function() {
-        alert($(this).data('id'));
+
+        let categoryId = $(this).data('id');
+
+        $.ajax({
+            type: 'GET',
+            url: '<?= base_url('/dashboard/categories') ?>/' + categoryId,
+            dataType: 'json',
+            success: function(response) {
+                $("#save-btn").text('Update');
+                $('#modalLabel').text('Update Category');
+                $('#name').val(response.data.name);
+                $('#category_id').val(response.data.id);
+                $('#modal').modal('toggle');
+            },
+            error: function(response) {
+                alert('some error happened');
+            }
+        });
     });
 
     $(document).on('click', '.delete-category', function() {
-        alert($(this).data('id'));
+
+        if (!confirm('Are you sure !')) return;
+
+        let categoryId = $(this).data('id');
+        let params = {
+            category_id: categoryId,
+            '<?= csrf_token() ?>': '<?= csrf_hash() ?>',
+            _method: 'DELETE'
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '<?= base_url('/dashboard/categories') ?>/' + categoryId,
+            dataType: 'json',
+            data: params,
+            success: function(response) {
+                $('#datatable').dataTable().fnDraw(false);
+            },
+            error: function(response) {
+                alert('some error happened');
+            }
+        });
     });
+
+    $('#modal').on('hidden.bs.modal', function(e) {
+        $('#name').val('');
+        $('#category_id').val();
+        $("#save-btn").text('Add');
+        $('#modalLabel').text('Add Category');
+        $('.is-invalid').removeClass('is-invalid');
+    });
+
+    function updateSubmitBtnText() {
+        $("#save-btn").prop('disabled', false);
+
+        if ($('#category_id').val()) {
+            $("#save-btn").text('Update');
+        } else {
+            $("#save-btn").text('Add');
+        }
+    }
 </script>
 
 <?= $this->endSection() ?>

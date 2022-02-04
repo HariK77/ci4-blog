@@ -10,6 +10,11 @@ class CategoryController extends BaseController
 {
     use ResponseTrait;
 
+    function __construct()
+    {
+        $this->category = new Category();
+    }
+
     public function index()
     {
         return view('dashboard/categories/index');
@@ -17,32 +22,82 @@ class CategoryController extends BaseController
 
     public function get()
     {
-        $model = new Category();
+        $draw = $this->request->getPost('draw');
+        $search = $this->request->getPost('search');
+        $length = $this->request->getPost('length');
+        $start = $this->request->getPost('start');
+        $orderBy = $this->request->getPost('order');
 
-        $result = array(
-            'draw' => '',
-            'recordsTotal' => 5,
-            'recordsFiltered' => 5,
-            'data' => $model->findAll(),
-            // 'error' => 'Error loading data'
+        $columns = array(
+            '0' => 'id',
+            '1' => 'name'
         );
 
-        echo json_encode($result);
+        if ($search['value']) {
+            $records = $this->category
+                            ->like('name', $search['value'])
+                            ->orderBy($columns[$orderBy[0]['column']], $orderBy[0]['dir'])
+                            ->findAll($length, $start);
+
+            $showingRecords = count($records);
+            $totalRecords = $this->category
+                                ->like('name', $search['value'])
+                                ->countAll();
+        } else {
+            $records = $this->category
+                            ->orderBy($columns[$orderBy[0]['column']], $orderBy[0]['dir'])
+                            ->findAll($length, $start);
+
+            $showingRecords = count($records);
+            $totalRecords = $this->category->countAll();
+        }
+
+        $result = array(
+            'draw' => $draw,
+            'recordsTotal' => $showingRecords,
+            'recordsFiltered' => $totalRecords,
+            'data' => $records,
+            // 'error' => 'Error loading data',
+        );
+
+        return $this->respond($result);
     }
 
     public function create()
     {
-        return view('dashboard/categories/create');
+        // return view('dashboard/categories/create');
     }
 
-    public function save()
+    public function store()
     {
-        dd($this->request->getPost());
+        $rules = array(
+            'name' => 'required|min_length[3]|is_unique[categories.name]',
+        );
+
+		if (!$this->validate($rules)) {
+			$data = array(
+				'errors' => $this->validator->getErrors()
+			);
+			return $this->failValidationErrors($data, 422, 'Validation failed');
+		}
+
+		$requestData = $this->request->getPost();
+        unset($requestData['csrf_token']);
+
+		$this->category->insert($requestData);
+
+		$response = [
+            'status' => 201,
+            'error' => null,
+            'messages' => "Category added successfully",
+        ];
+
+		return $this->respond($response);
     }
 
     public function show($id)
     {
-        dd($id);
+        return $this->respond(array('data' => $this->category->find($id)));
     }
 
     public function edit($id)
@@ -52,11 +107,48 @@ class CategoryController extends BaseController
 
     public function update($id)
     {
-        dd($this->request->getPost());
+        $rules = array(
+            'name' => 'required|min_length[3]|is_unique[categories.name,id,'.$id.']',
+        );
+
+		if (!$this->validate($rules)) {
+			$data = array(
+				'errors' => $this->validator->getErrors()
+			);
+			return $this->failValidationErrors($data, 422, 'Validation failed');
+		}
+
+		$requestData = $this->request->getPost();
+        unset($requestData['csrf_token']);
+        unset($requestData['_method']);
+
+		$this->category->update($id, $requestData);
+
+		$response = [
+            'status' => 200,
+            'error' => null,
+            'messages' => "Category updated successfully",
+        ];
+
+		return $this->respond($response);
     }
 
     public function delete($id)
     {
-        dd($id);
+        $this->category->delete($id);
+
+        $response = [
+            'status' => 200,
+            'error' => null,
+            'messages' => "Category has been Deleted",
+        ];
+
+        return $this->respondDeleted($response);
     }
+
+    // return $this->respondDeleted($response);
+    // return $this->failNotFound('No User Found with id ' . $id);
+    // return $this->respondUpdated($response);
+    // return $this->fail('There is not data to update');
+    // return $this->respond($response);
 }
