@@ -59,7 +59,7 @@ class AuthController extends BaseController
         $status = sendEmail($data);
 
         if ($status) {
-            return redirect()->back()->with("success", "Please verify your email to login.");
+            return redirect()->back()->with("success", "Registration complete. Please verify your email to login.");
         }
 
         return redirect()->back()->with("error", "Some unknown error happened.");
@@ -102,7 +102,7 @@ class AuthController extends BaseController
                 return redirect()->to('/dashboard');
             }
 
-            return redirect()->to('sign-in')->with("error", "Plase verify you email");
+            return redirect()->to('sign-in')->with("error", "Please verify your email, to login");
         }
     }
 
