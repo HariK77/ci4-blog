@@ -9,8 +9,9 @@ class AuthController extends BaseController
 {
     function __construct()
     {
-        $this->user = new User();
+        $this->userModel = new User();
     }
+    
     public function signUpView()
     {
         return view('auth/sign-up', array('validation' => $this->validation));
@@ -44,15 +45,13 @@ class AuthController extends BaseController
         $requestData['type'] = 0;
         $requestData['email_verified'] = 0;
 
-        unset($requestData['csrf_token'], $requestData['terms'], $requestData['confirm_password']);
-
-        $userId = $this->user->insert($requestData);
+        $userId = $this->userModel->insert($requestData);
         $requestData['token'] = base64_encode($requestData['email'] . '_' . $userId);
 
         $data = array(
             'data' => $requestData,
             'email' => $this->request->getPost('email'),
-            'subject' => 'Enquiry from ' . getenv('app.name'),
+            'subject' => 'Registration successful for ' . getenv('app.name'),
             'view' => 'emails/verify.php',
         );
 
@@ -73,7 +72,7 @@ class AuthController extends BaseController
     public function verifyEmail($token)
     {
         $params = explode('_', base64_decode($token));
-        $status = $this->user->update($params[1], array('email_verified' => 1));
+        $status = $this->userModel->update($params[1], array('email_verified' => 1));
 
         if ($status) {
             return redirect()->to('sign-in')->with("success", "Your email has been verified, Now you can login.");
@@ -89,13 +88,19 @@ class AuthController extends BaseController
             'password' => 'required|min_length[6]|validate_user[email, password]',
         );
 
-        if (!$this->validate($rules)) {
+        $errorMessages = array(
+			'password' => array(
+				'validate_user' => 'Email or Password is incorrect'
+			)
+		);
+
+        if (!$this->validate($rules, $errorMessages)) {
             $data = array(
                 'validation' => $this->validator
             );
             return redirect()->back()->withInput($data);
         } else {
-            $user = $this->user->where('email', $this->request->getVar('email'))->first();
+            $user = $this->userModel->where('email', $this->request->getVar('email'))->first();
 
             if ($user->email_verified == 1) {
                 $this->setUserSession($user);

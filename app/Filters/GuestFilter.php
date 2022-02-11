@@ -28,6 +28,8 @@ class GuestFilter implements FilterInterface
         if (session('isLoggedIn')) {
             return redirect()->back();
         }
+
+        return $request;
     }
 
     /**

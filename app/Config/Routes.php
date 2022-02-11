@@ -76,10 +76,11 @@ $routes->group('/dashboard', ['filter' => 'admin'], function ($routes) {
 
     $routes->get('users', 'Admin\UserController::index');
     $routes->get('users/create', 'Admin\UserController::create');
-    $routes->post('users', 'Admin\UsersController::store');
+    $routes->post('users', 'Admin\UserController::store');
+    $routes->get('users/edit/(:any)', 'Admin\UserController::edit/$1');
     $routes->get('users/(:any)', 'Admin\UserController::show/$1');
     $routes->patch('users/(:any)', 'Admin\UserController::update/$1');
-    $routes->delete('users/(:any)', 'Admin\UserController::delete/$1');
+    $routes->delete('users', 'Admin\UserController::delete');
 
     $routes->get('posts', 'Admin\PostController::index');
     $routes->get('posts/create', 'Admin\PostController::create');
