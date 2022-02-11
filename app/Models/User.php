@@ -12,7 +12,7 @@ class User extends Model
     protected $useAutoIncrement = true;
     protected $insertID         = 0;
     protected $returnType       = 'object';
-    protected $useSoftDeletes   = false;
+    protected $useSoftDeletes   = true;
     protected $protectFields    = true;
     protected $allowedFields    = ['name', 'email', 'phone', 'password', 'type', 'email_verified', 'created_at', 'updated_at', 'deleted_at'];
 
@@ -33,7 +33,7 @@ class User extends Model
     protected $allowCallbacks = true;
     protected $beforeInsert   = ['beforeInsert'];
     protected $afterInsert    = [];
-    protected $beforeUpdate   = [];
+    protected $beforeUpdate   = ['beforeUpdate'];
     protected $afterUpdate    = [];
     protected $beforeFind     = [];
     protected $afterFind      = [];
@@ -45,7 +45,16 @@ class User extends Model
     {
         if (isset($data['data']['password'])) {
             $plaintextPassword = $data['data']['password'];
-            $data['data']['password'] = hashPassword($plaintextPassword);
+            $data['data']['password'] = password_hash($plaintextPassword, PASSWORD_BCRYPT);
+        }
+        return $data;
+    }
+
+    protected function beforeUpdate(array $data): array
+    {
+        if (isset($data['data']['password'])) {
+            $plaintextPassword = $data['data']['password'];
+            $data['data']['password'] = password_hash($plaintextPassword, PASSWORD_BCRYPT);
         }
         return $data;
     }

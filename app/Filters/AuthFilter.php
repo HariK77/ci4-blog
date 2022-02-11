@@ -28,6 +28,8 @@ class AuthFilter implements FilterInterface
         if (!session('isLoggedIn')) {
             return redirect()->to('sign-in')->with('error', 'Please sign in to continue');
         }
+
+        return $request;
     }
 
     /**

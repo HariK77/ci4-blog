@@ -26,13 +26,14 @@ class AdminFilter implements FilterInterface
     public function before(RequestInterface $request, $arguments = null)
     {
         if (!session('isLoggedIn')) {
-            return redirect()->to('login')->with('error', 'Please login to continue');
+            return redirect()->to('sign-in')->with('error', 'Please sign in to continue');
         }
 
         if (session('user_type') != 1) {
             return redirect()->to('profile');
         }
 
+        return $request;
     }
 
     /**
