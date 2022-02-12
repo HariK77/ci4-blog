@@ -59,21 +59,23 @@
                         <!-- <li class="menu-title">Main</li> -->
                         <li><a href="<?= base_url('/dashboard') ?>" class="waves-effect"><i class="mdi mdi-view-dashboard"></i>
                                 <span>Dashboard</span></a></li>
-                        <li><a href="<?= base_url('/dashboard/categories') ?>" class="waves-effect"><i class="mdi mdi-calendar-check"></i><span>
+                        <li><a href="<?= base_url('/dashboard/categories') ?>" class="waves-effect"><i class="mdi mdi-book-multiple"></i><span>
                                     Categories</span></a></li>
-                        <li><a href="javascript:void(0);" class="waves-effect"><i class="mdi mdi-email-outline"></i><span> Users <span class="float-right menu-arrow"><i class="mdi mdi-chevron-right"></i></span></span></a>
+                        <li class="<?= getActiveClass('dashboard/users/edit/*') ?>"><a href="javascript:void(0);" class="waves-effect <?= getActiveClass('dashboard/users/edit/*') ?>"><i class="mdi mdi-account-multiple"></i><span> Users <span class="float-right menu-arrow"><i class="mdi mdi-chevron-right"></i></span></span></a>
                             <ul class="submenu">
-                                <li><a href="<?= base_url('/dashboard/users') ?>">Users</a></li>
+                                <li class="<?= getActiveClass('dashboard/users/edit/*') ?>">
+                                    <a class="<?= getActiveClass('dashboard/users/edit/*') ?>" href="<?= base_url('/dashboard/users') ?>">Users</a>
+                                </li>
                                 <li><a href="<?= base_url('/dashboard/users/create') ?>">Create</a></li>
                             </ul>
                         </li>
-                        <li><a href="javascript:void(0);" class="waves-effect"><i class="mdi mdi-email-outline"></i><span> Posts <span class="float-right menu-arrow"><i class="mdi mdi-chevron-right"></i></span></span></a>
+                        <li><a href="javascript:void(0);" class="waves-effect"><i class="mdi mdi-library-books"></i><span> Posts <span class="float-right menu-arrow"><i class="mdi mdi-chevron-right"></i></span></span></a>
                             <ul class="submenu">
                                 <li><a href="<?= base_url('/dashboard/posts') ?>">Posts</a></li>
                                 <li><a href="<?= base_url('/dashboard/posts/create') ?>">Create</a></li>
                             </ul>
                         </li>
-                        <li><a href="<?= base_url('/') ?>" class="waves-effect"><i class="mdi mdi-view-dashboard"></i>
+                        <li><a href="<?= base_url('/') ?>" class="waves-effect"><i class="mdi mdi-chevron-double-right"></i>
                                 <span>Go To Blog</span></a></li>
                     </ul>
                 </div><!-- Sidebar -->

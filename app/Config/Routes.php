@@ -78,6 +78,7 @@ $routes->group('/dashboard', ['filter' => 'admin'], function ($routes) {
     $routes->get('users/create', 'Admin\UserController::create');
     $routes->post('users', 'Admin\UserController::store');
     $routes->get('users/edit/(:any)', 'Admin\UserController::edit/$1');
+    $routes->get('users/enable/(:any)', 'Admin\UserController::enableUser/$1');
     $routes->get('users/(:any)', 'Admin\UserController::show/$1');
     $routes->patch('users/(:any)', 'Admin\UserController::update/$1');
     $routes->delete('users', 'Admin\UserController::delete');

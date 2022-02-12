@@ -70,3 +70,8 @@ function sendEmail($data)
     }
     return false;
 }
+
+function getActiveClass($url)
+{
+    return url_is($url) ? 'active' : '';
+}

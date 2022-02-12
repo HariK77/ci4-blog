@@ -15,12 +15,34 @@ class UserController extends BaseController
     public function index()
     {
         $per_page = 10;
-        $users = $this->userModel->where('type', DEFAULT_USER_TYPE)->paginate($per_page);
+        $search = $this->request->getVar('search');
+        $deleted = $this->request->getVar('deleted');
+        $order_by = $this->request->getVar('order_by') ? $this->request->getVar('order_by') : 'created_at';
+        $email_verified = $this->request->getVar('email_verified');
+
+        $users = $this->userModel->withDefault()
+                        ->withDeleted()
+                        ->emailVerified($email_verified)
+                        ->deleted($deleted)
+                        ->search($search)
+                        ->orderBy($order_by, 'ASC')
+                        ->paginate($per_page);
+
+        $total_records = $this->userModel->withDefault()
+                                ->withDeleted()
+                                ->emailVerified($email_verified)
+                                ->deleted($deleted)
+                                ->search($search)
+                                ->countAllResults();
+
         $data = array(
             'users' => $users,
             'pager' => $this->userModel->pager,
-            'total_records' => $this->userModel->where('type', DEFAULT_USER_TYPE)->countAll(),
-            'per_page' => $per_page
+            'showing_records' => count($users),
+            'total_records' => $total_records,
+            'active_types' => $this->userModel->getUserActiveTypes(),
+            'status_types' => $this->userModel->getUserStatusTypes(),
+            'order_by_types' => $this->userModel->getOrderByTypes(),
         );
 
         return view('dashboard/users/index', $data);
@@ -128,7 +150,23 @@ class UserController extends BaseController
 
     public function delete()
     {
-        $this->userModel->delete($this->request->getPost('id'));
-        return redirect()->back()->with("success", "User has been soft deleted successfully");
+
+        $type = $this->request->getPost('type');
+        $id = $this->request->getPost('id');
+
+        $purge = false;
+        $message = "User has been soft deleted successfully";
+        if ($type == 'permanent') {
+            $purge = true;
+            $message = "User has been deleted permanently";
+        }
+        $this->userModel->delete($id, $purge);
+        return redirect()->back()->with("success", $message);
+    }
+
+    public function enableUser($id)
+    {
+        $this->userModel->update($id, array('deleted_at' => null));
+        return redirect()->back()->with("success", "User has been re enabled successfully");
     }
 }
