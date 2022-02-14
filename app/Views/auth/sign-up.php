@@ -49,7 +49,7 @@
                         <div class="form-floating">
                             <input class="form-control <?= getErrorClass($validation, 'confirm_password') ?>" id="confirm_password" name="confirm_password" value="" type="password" placeholder="Confirm your password" />
                             <label for="phone">Confirm password</label>
-                            <div class="invalid-feedback">Confirm <?= getErrorMessage($validation, 'confirm_password') ?></div>
+                            <div class="invalid-feedback"><?= getErrorMessage($validation, 'confirm_password') ?></div>
                         </div>
                         <div class="mt-3">
                             <div class="form-check">

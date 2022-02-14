@@ -87,3 +87,17 @@
 .lh-tight {
     line-height: 1.25;
 }
+
+.nav-pills > li.nav-item > a.nav-link {
+    font-size: 0.95rem !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.0625em !important;
+    text-transform: uppercase !important;
+}
+
+.profile-heading {
+    font-size: 0.95rem !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.0625em !important;
+    text-transform: uppercase !important;
+}

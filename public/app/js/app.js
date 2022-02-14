@@ -100,3 +100,11 @@ const baseUrl = document.querySelector('meta[name="base-url"]').content;
 //         errorElement.addEventListener('change', e => e.target.classList.remove('is-invalid'));
 //     })
 // }
+
+// highlight profile side bar links
+const profileNavLinks = document.querySelectorAll('.nav.nav-pills li a');
+for (let navLink of profileNavLinks) {
+    if (url === navLink.href) {
+        navLink.classList.add('active');
+    }
+}

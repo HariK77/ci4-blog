@@ -34,19 +34,18 @@ $routes->setAutoRoute(false);
 
 // Authentication Routes
 $routes->get('/sign-up', 'AuthController::signUpView', ['filter' => 'guest']);
-$routes->post('/sign-up', 'AuthController::signUp');
+$routes->post('/sign-up', 'AuthController::signUp', ['filter' => 'guest']);
 $routes->get('/sign-in', 'AuthController::signInView', ['filter' => 'guest']);
-$routes->post('/sign-in', 'AuthController::signIn');
-$routes->get('/sign-out', 'AuthController::signOut');
-$routes->get('/verify-email/(:any)', 'AuthController::verifyEmail/$1');
+$routes->post('/sign-in', 'AuthController::signIn', ['filter' => 'guest']);
+$routes->get('/sign-out', 'AuthController::signOut', ['filter' => 'auth']);
+$routes->get('/verify-email/(:any)', 'AuthController::verifyEmail/$1', ['filter' => 'guest']);
+$routes->get('/password/forgot', 'AuthController::passwordForgotView', ['filter' => 'guest']);
+$routes->post('/password/forgot', 'AuthController::sendPasswordResetEmail', ['filter' => 'guest']);
+$routes->get('/password/reset/(:any)', 'AuthController::passwordResetView/$1', ['filter' => 'guest']);
+$routes->post('/password/reset', 'AuthController::passwordReset', ['filter' => 'guest']);
 
-$routes->get('/password/forgot', 'AuthController::passwordForgotView');
-$routes->get('/password/forgot-password-email-send', 'AuthController::forgotPasswordEmailSend');
-$routes->get('/password/forgot/(:any)', 'AuthController::passwordChangeView/$1');
-$routes->post('/password/change', 'AuthController::passwordChange');
 
-
-// All public pages
+// All guest pages
 $routes->get('/', 'HomeController::index');
 $routes->get('/about', 'HomeController::about');
 $routes->get('/contact', 'HomeController::contact');
@@ -54,15 +53,16 @@ $routes->post('/contact', 'HomeController::contactSubmit');
 $routes->get('/posts', 'HomeController::posts');
 $routes->get('/posts/(:any)', 'HomeController::showPost/$1');
 
-// Normal User
+// Authenticated -- Normal User
 $routes->group('', ['filter' => 'auth'], function ($routes) {
     $routes->get('/profile', 'ProfileController::index');
-    $routes->get('/auth/change-password', 'AuthController::changePasswordView');
-    $routes->post('/auth/change-password', 'AuthController::changePassword');
+    $routes->post('/profile', 'ProfileController::saveProfile');
+    $routes->get('/profile/change-password', 'ProfileController::changePasswordView');
+    $routes->post('/profile/change-password', 'ProfileController::changePassword');
     $routes->get('/profile/posts', 'UserPostController::index');
 });
 
-// Admin User
+// Authenticated -- Admin User
 $routes->group('/dashboard', ['filter' => 'admin'], function ($routes) {
     $routes->get('', 'Admin\DashboardController::index');
 
