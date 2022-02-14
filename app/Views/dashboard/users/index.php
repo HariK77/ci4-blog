@@ -20,6 +20,7 @@
     <?= $this->include('layouts/includes/messages_dashboard') ?>
     <div class="form-group row">
         <div class="col-md-2">
+            <label for="deleted">Selet Deleted</label>
             <select class="form-control" name="deleted" id="deleted">
                 <?php foreach ($active_types as $active_type): ?>
                     <option value="<?= $active_type->value ?>"><?= $active_type->name ?></option>
@@ -27,6 +28,7 @@
             </select>
         </div>
         <div class="col-md-2">
+        <label for="email_verified">Selet Email Status</label>
             <select class="form-control" name="email_verified" id="email_verified">
                 <?php foreach ($status_types as $status_type): ?>
                     <option value="<?= $status_type->value ?>"><?= $status_type->name ?></option>
@@ -34,6 +36,7 @@
             </select>
         </div>
         <div class="col-md-2">
+            <label for="order_by">Selet Order By</label>
             <select class="form-control" name="order_by" id="order_by">
                 <?php foreach ($order_by_types as $order_by_type): ?>
                     <option value="<?= $order_by_type->value ?>"><?= $order_by_type->name ?></option>
@@ -41,13 +44,16 @@
             </select>
         </div>
         <div class="col-md-2">
+            <label for="search">Search</label>
             <div class="form-group">
                 <input class="form-control" type="text" name="search" id="search" value="" placeholder="Search name, email">
             </div>
         </div>
         <div class="col-md-4">
-            <button id="search-btn" class="btn btn-primary">Search</button>
-            <button id="clear-search-btn" class="btn btn-primary ml-2">Clear Search</button>
+            <div class="mt-4">
+                <button id="search-btn" class="btn btn-primary">Search</button>
+                <button id="clear-search-btn" class="btn btn-primary ml-2">Clear Search</button>
+            </div>
         </div>
     </div>
     <div class="card">

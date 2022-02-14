@@ -84,14 +84,17 @@ class AuthController extends BaseController
     public function signIn()
     {
         $rules = array(
-            'email' => 'required|valid_email',
+            'email' => 'required|valid_email|check_email_registered[email]',
             'password' => 'required|min_length[6]|validate_user[email, password]',
         );
 
         $errorMessages = array(
 			'password' => array(
 				'validate_user' => 'Email or Password is incorrect'
-			)
+            ),
+            'email' => array(
+                'check_email_registered' => 'This email is not registered in our system'
+            )
 		);
 
         if (!$this->validate($rules, $errorMessages)) {
@@ -111,7 +114,7 @@ class AuthController extends BaseController
         }
     }
 
-    public function setUserSession($user)
+    private function setUserSession($user)
     {
         $data = array(
             'id' => $user->id,
@@ -131,33 +134,91 @@ class AuthController extends BaseController
         return redirect()->to('/');
     }
 
-    public function changePasswordView()
-    {
-        return view('auth/password/change');
-    }
-
-    public function changePassword()
-    {
-        
-    }
-
     public function passwordForgotView()
     {
-        return view('auth/password/email');
+        return view('auth/password/email', array('validation' => $this->validation));
     }
 
-    public function forgotPasswordEmailSend()
+    public function sendPasswordResetEmail()
     {
+        $rules = array(
+            'email' => 'required|valid_email|check_email_registered[email]',
+        );
+
+        $errorMessages = array(
+            'email' => array(
+                'check_email_registered' => 'This email is not registered in our system'
+            )
+		);
+
+        if (!$this->validate($rules, $errorMessages)) {
+            $data = array(
+                'validation' => $this->validator
+            );
+            return redirect()->back()->withInput($data);
+        } else {
+            $requestData = $this->request->getPost();
+            $requestData['token'] = base64_encode($requestData['email'] . '_' . time());
+
+            $data = array(
+                'data' => $requestData,
+                'email' => $this->request->getPost('email'),
+                'subject' => 'Password Reset for ' . getenv('app.name'),
+                'view' => 'emails/reset.php',
+            );
+    
+            $status = sendEmail($data);
+    
+            if ($status) {
+                return redirect()->back()->with("success", "Password reset link has been sent to your email.");
+            }
+    
+            return redirect()->back()->with("error", "Some unknown error happened.");
+        }
+    }
+
+    public function passwordResetView($encrypted)
+    {
+        $params = explode('_', base64_decode($encrypted));
+        $user = $this->userModel->where('email', $params[0])->first();
         
-    }
-
-    public function passwordChangeView($encrypted)
-    {
-        return view('auth/password/reset');
-    }
-
-    public function passwordChange()
-    {
+        $data = array(
+            'user' => $user,
+            'token' => $encrypted,
+            'validation' => $this->validation
+        );
         
+        return view('auth/password/reset', $data);
+    }
+
+    public function passwordReset()
+    {
+
+        $rules = array(
+            'password' => 'required|min_length[6]',
+            'confirm_password' => 'required|min_length[6]|matches[password]',
+        );
+        $messages = array(
+            'confirm_password' => array(
+                'required' => 'The confirm password field is required.',
+                'matches' => 'The confirm password field does not match the password field.'
+            ),
+        );
+
+        if (!$this->validate($rules, $messages)) {
+            $data = array(
+                'validation' => $this->validator
+            );
+            return redirect()->back()->withInput($data);
+        }
+
+        $params = explode('_', base64_decode($this->request->getPost('token')));
+        $result = $this->userModel->set(['password' => $this->request->getPost('password')])->where('email', $params[0])->update();
+        if ($result) {
+            return redirect()->to('sign-in')->with("success", "Password reset successful, Sign in to continue");
+        }
+
+        return redirect()->back()->with("error", "Some unknown error happened.");
     }
 }
+ 

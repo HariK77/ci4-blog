@@ -2,6 +2,9 @@
 
 namespace Config;
 
+use App\Validation\CheckCurrentPassword;
+use App\Validation\CheckEmailRegistered;
+use App\Validation\SameAsCurrentPassword;
 use App\Validation\UserCheck;
 use CodeIgniter\Validation\CreditCardRules;
 use CodeIgniter\Validation\FileRules;
@@ -26,6 +29,9 @@ class Validation
         FileRules::class,
         CreditCardRules::class,
         UserCheck::class,
+        CheckEmailRegistered::class,
+        SameAsCurrentPassword::class,
+        CheckCurrentPassword::class
     ];
 
     /**

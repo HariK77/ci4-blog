@@ -13,7 +13,7 @@ class UserCheck
     public function validate_user(string $str, string $fields, array $data)
     {
         $model = new User();
-        $user = $model->asObject()->where('email', $data['email'])->first();
+        $user = $model->where('email', $data['email'])->first();
 
         if (!$user) return false;
         

@@ -47,7 +47,11 @@
                             <div class="text-center text-danger mb-3">Error sending message!</div>
                         </div>
                         <!-- Submit Button-->
-                        <button class="btn btn-primary text-uppercase" id="submit-btn" type="submit">Submit</button>
+                        <div>
+                            <button class="btn btn-primary text-uppercase" id="submit-btn" type="submit">Submit</button>
+                            <p class="float-end">Forgot password? <a href="<?= base_url('password/forgot') ?>">Click here</a> </p>
+                        </div>
+                        
                     </form>
                 </div>
                 <div>
