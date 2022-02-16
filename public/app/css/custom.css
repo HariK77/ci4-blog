@@ -101,3 +101,7 @@
     letter-spacing: 0.0625em !important;
     text-transform: uppercase !important;
 }
+
+p {
+    margin: 0.2rem 0;
+  }

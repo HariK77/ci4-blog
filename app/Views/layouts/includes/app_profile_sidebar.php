@@ -6,17 +6,17 @@
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">
             <li class="nav-item">
-                <a href="<?= base_url('/profile') ?>" class="nav-link">
+                <a href="<?= base_url('profile') ?>" class="nav-link">
                     Profile
                 </a>
             </li>
             <li class="nav-item">
-                <a href="<?= base_url('/profile/change-password') ?>" class="nav-link">
+                <a href="<?= base_url('profile/change-password') ?>" class="nav-link">
                     Change Password
                 </a>
             </li>
             <li class="nav-item">
-                <a href="<?= base_url('/profile/posts') ?>" class="nav-link">
+                <a href="<?= base_url('posts') ?>" class="nav-link">
                     Posts
                 </a>
             </li>

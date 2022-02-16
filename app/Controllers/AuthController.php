@@ -46,7 +46,7 @@ class AuthController extends BaseController
         $requestData['email_verified'] = 0;
 
         $userId = $this->userModel->insert($requestData);
-        $requestData['token'] = base64_encode($requestData['email'] . '_' . $userId);
+        $requestData['token'] = base64_encode_url($requestData['email'] . 'split' . $userId);
 
         $data = array(
             'data' => $requestData,
@@ -71,7 +71,7 @@ class AuthController extends BaseController
 
     public function verifyEmail($token)
     {
-        $params = explode('_', base64_decode($token));
+        $params = explode('split', base64_decode_url($token));
         $status = $this->userModel->update($params[1], array('email_verified' => 1));
 
         if ($status) {
@@ -158,7 +158,7 @@ class AuthController extends BaseController
             return redirect()->back()->withInput($data);
         } else {
             $requestData = $this->request->getPost();
-            $requestData['token'] = base64_encode($requestData['email'] . '_' . time());
+            $requestData['token'] = base64_encode_url($requestData['email'] . 'split' . time());
 
             $data = array(
                 'data' => $requestData,
@@ -179,7 +179,7 @@ class AuthController extends BaseController
 
     public function passwordResetView($encrypted)
     {
-        $params = explode('_', base64_decode($encrypted));
+        $params = explode('split', base64_decode_url($encrypted));
         $user = $this->userModel->where('email', $params[0])->first();
         
         $data = array(
@@ -212,7 +212,7 @@ class AuthController extends BaseController
             return redirect()->back()->withInput($data);
         }
 
-        $params = explode('_', base64_decode($this->request->getPost('token')));
+        $params = explode('_', base64_decode_url($this->request->getPost('token')));
         $result = $this->userModel->set(['password' => $this->request->getPost('password')])->where('email', $params[0])->update();
         if ($result) {
             return redirect()->to('sign-in')->with("success", "Password reset successful, Sign in to continue");
