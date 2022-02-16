@@ -33,37 +33,37 @@ $routes->setAutoRoute(false);
 // route since we don't have to scan directories.
 
 // Authentication Routes
-$routes->get('/sign-up', 'AuthController::signUpView', ['filter' => 'guest']);
-$routes->post('/sign-up', 'AuthController::signUp', ['filter' => 'guest']);
-$routes->get('/sign-in', 'AuthController::signInView', ['filter' => 'guest']);
-$routes->post('/sign-in', 'AuthController::signIn', ['filter' => 'guest']);
-$routes->get('/sign-out', 'AuthController::signOut', ['filter' => 'auth']);
-$routes->get('/verify-email/(:any)', 'AuthController::verifyEmail/$1', ['filter' => 'guest']);
-$routes->get('/password/forgot', 'AuthController::passwordForgotView', ['filter' => 'guest']);
-$routes->post('/password/forgot', 'AuthController::sendPasswordResetEmail', ['filter' => 'guest']);
-$routes->get('/password/reset/(:any)', 'AuthController::passwordResetView/$1', ['filter' => 'guest']);
-$routes->post('/password/reset', 'AuthController::passwordReset', ['filter' => 'guest']);
-
-
-// All guest pages
-$routes->get('/', 'HomeController::index');
-$routes->get('/about', 'HomeController::about');
-$routes->get('/contact', 'HomeController::contact');
-$routes->post('/contact', 'HomeController::contactSubmit');
-$routes->get('/posts', 'HomeController::posts');
-$routes->get('/posts/(:any)', 'HomeController::showPost/$1');
+$routes->get('sign-up', 'AuthController::signUpView', ['filter' => 'guest']);
+$routes->post('sign-up', 'AuthController::signUp', ['filter' => 'guest']);
+$routes->get('sign-in', 'AuthController::signInView', ['filter' => 'guest']);
+$routes->post('sign-in', 'AuthController::signIn', ['filter' => 'guest']);
+$routes->get('sign-out', 'AuthController::signOut', ['filter' => 'auth']);
+$routes->get('verify-email/(:any)', 'AuthController::verifyEmail/$1', ['filter' => 'guest']);
+$routes->get('password/forgot', 'AuthController::passwordForgotView', ['filter' => 'guest']);
+$routes->post('password/forgot', 'AuthController::sendPasswordResetEmail', ['filter' => 'guest']);
+$routes->get('password/reset/(:any)', 'AuthController::passwordResetView/$1', ['filter' => 'guest']);
+$routes->post('password/reset', 'AuthController::passwordReset', ['filter' => 'guest']);
 
 // Authenticated -- Normal User
 $routes->group('', ['filter' => 'auth'], function ($routes) {
-    $routes->get('/profile', 'ProfileController::index');
-    $routes->post('/profile', 'ProfileController::saveProfile');
-    $routes->get('/profile/change-password', 'ProfileController::changePasswordView');
-    $routes->post('/profile/change-password', 'ProfileController::changePassword');
-    $routes->get('/profile/posts', 'UserPostController::index');
+    // Profile
+    $routes->get('profile', 'ProfileController::index');
+    $routes->post('profile', 'ProfileController::saveProfile');
+    $routes->get('profile/change-password', 'ProfileController::changePasswordView');
+    $routes->post('profile/change-password', 'ProfileController::changePassword');
+
+    // posts
+    $routes->get('posts', 'UserPostController::index');
+    $routes->get('posts/create', 'UserPostController::create');
+    $routes->post('posts', 'UserPostController::store');
+    $routes->get('posts/edit/(:any)', 'UserPostController::edit/$1');
+    $routes->get('posts/(:any)', 'UserPostController::show/$1');
+    $routes->patch('posts/(:any)', 'UserPostController::update/$1');
+    $routes->delete('posts', 'UserPostController::delete');
 });
 
 // Authenticated -- Admin User
-$routes->group('/dashboard', ['filter' => 'admin'], function ($routes) {
+$routes->group('dashboard', ['filter' => 'admin'], function ($routes) {
     $routes->get('', 'Admin\DashboardController::index');
 
     $routes->get('categories', 'Admin\CategoryController::index');
@@ -92,9 +92,12 @@ $routes->group('/dashboard', ['filter' => 'admin'], function ($routes) {
 
 });
 
-
-
-
+// All guest pages
+$routes->get('/', 'HomeController::index');
+$routes->get('about', 'HomeController::about');
+$routes->get('contact', 'HomeController::contact');
+$routes->post('contact', 'HomeController::contactSubmit');
+$routes->get('(:any)', 'HomeController::showPost/$1');
 
 /*
  * --------------------------------------------------------------------

@@ -108,3 +108,9 @@ for (let navLink of profileNavLinks) {
         navLink.classList.add('active');
     }
 }
+
+// enable tooltips
+var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+  return new bootstrap.Tooltip(tooltipTriggerEl)
+})
