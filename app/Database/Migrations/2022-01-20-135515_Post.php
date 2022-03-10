@@ -42,21 +42,19 @@ class Post extends Migration
             'post_content'       => [
                 'type'       => 'TEXT'
             ],
-            'id_header_image' => [
-                'type'           => 'INT',
-                'constraint'     => 11,
-                'unsigned'       => true,
+            'header_image' => [
+                'type'       => 'TEXT',
             ],
-            'id_image_one' => [
-                'type'           => 'INT',
-                'constraint'     => 11,
-                'unsigned'       => true,
-            ],
-            'id_image_two' => [
-                'type'           => 'INT',
-                'constraint'     => 11,
-                'unsigned'       => true,
-            ],
+            // 'id_image_one' => [
+            //     'type'           => 'INT',
+            //     'constraint'     => 11,
+            //     'unsigned'       => true,
+            // ],
+            // 'id_image_two' => [
+            //     'type'           => 'INT',
+            //     'constraint'     => 11,
+            //     'unsigned'       => true,
+            // ],
             'created_at'       => [
                 'type'       => 'TIMESTAMP',
                 'default'     => null,

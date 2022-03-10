@@ -61,17 +61,17 @@
                 <a class="ms-auto" href="<?= base_url('posts/create') ?>"><button data-bs-toggle="tooltip" title="Add"><i class="fa fa-plus"></i></button></a>
             </div>
             <div class="posts">
+                <?php foreach($posts as $post): ?>
                 <div class="card mb-3">
                     <div class="row g-0 p-3">
                         <div class="col-md-2 mt-auto mb-auto">
-                            <img src="<?= base_url('/app/img/post-bg.jpg') ?>" class="img-fluid" alt="...">
+                            <img src="<?= base_url($post->header_image) ?>" class="img-fluid" alt="...">
                         </div>
                         <div class="col-md-8">
                             <div class="card-body pl-2">
-                                <h5 class="card-title">Card Title</h5>
-                                <p class="card-text">This is a wider card with supporting text below as a natural
-                                    lead-in to additional content. This content is a little bit longer.</p>
-                                <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                                <h5 class="card-title"><?= $post->title ?></h5>
+                                <p class="card-text"><?= $post->mini_title ?></p>
+                                <p class="card-text"><small class="text-muted"><?= time_elapsed_string($post->created_at) ?></small></p>
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -82,6 +82,7 @@
                         </div>
                     </div>
                 </div>
+                <?php endforeach; ?>
             </div>
         </div>
     </div>

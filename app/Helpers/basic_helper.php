@@ -5,8 +5,22 @@ function helperTest()
     return 'Hey! I\'m working !!';
 }
 
-function formatDate($date)
+/**
+ * type = 0 => 10-03-2022
+ * type = 1 => March 03, 2022
+ */
+
+function formatDate($date, $type = 0)
 {
+    if ($type === 0) {
+        return date('d-m-Y', strtotime($date));
+    }
+
+    if ($type === 1) {
+        return date('F d, Y', strtotime($date));
+    }
+
+    // default
     return date('d-m-Y', strtotime($date));
 }
 
@@ -82,4 +96,43 @@ function base64_encode_url($string) {
 
 function base64_decode_url($string) {
     return base64_decode(str_replace(['-','_'], ['+','/'], $string));
+}
+
+function slug($string)
+{
+    return strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $string)));
+}
+
+function urlFriendlyFileName($string)
+{
+    return preg_replace('/\W+/', '-', strtolower(trim($string)));
+}
+
+function time_elapsed_string($datetime, $full = false) {
+    $now = new DateTime;
+    $ago = new DateTime($datetime);
+    $diff = $now->diff($ago);
+
+    $diff->w = floor($diff->d / 7);
+    $diff->d -= $diff->w * 7;
+
+    $string = array(
+        'y' => 'year',
+        'm' => 'month',
+        'w' => 'week',
+        'd' => 'day',
+        'h' => 'hour',
+        'i' => 'minute',
+        's' => 'second',
+    );
+    foreach ($string as $k => &$v) {
+        if ($diff->$k) {
+            $v = $diff->$k . ' ' . $v . ($diff->$k > 1 ? 's' : '');
+        } else {
+            unset($string[$k]);
+        }
+    }
+
+    if (!$full) $string = array_slice($string, 0, 1);
+    return $string ? implode(', ', $string) . ' ago' : 'just now';
 }
