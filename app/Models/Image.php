@@ -4,20 +4,20 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class Post extends Model
+class Image extends Model
 {
     protected $DBGroup          = 'default';
-    protected $table            = 'posts';
+    protected $table            = 'images';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $insertID         = 0;
-    protected $returnType       = 'object';
-    protected $useSoftDeletes   = true;
+    protected $returnType       = 'array';
+    protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['id_user', 'id_category', 'title', 'mini_title', 'slug', 'post_content', 'header_image'];
+    protected $allowedFields    = ['url', 'id_post', 'alt_text', 'caption_text'];
 
     // Dates
-    protected $useTimestamps = true;
+    protected $useTimestamps = false;
     protected $dateFormat    = 'datetime';
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
@@ -39,12 +39,4 @@ class Post extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
-
-
-    public function withUser()
-    {
-        $this->builder()->select('posts.*, users.id, users.name, users.email')
-                    ->join('users', 'users.id = posts.id_user');
-        return $this;
-    }
 }

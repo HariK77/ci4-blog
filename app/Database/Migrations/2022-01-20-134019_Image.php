@@ -19,6 +19,12 @@ class Image extends Migration
                 'type'       => 'VARCHAR',
                 'constraint' => 255,
             ],
+            'id_post' => [
+                'type'           => 'INT',
+                'constraint'     => 11,
+                'unsigned'       => true,
+                'null'          => true,
+            ],
             'alt_text'       => [
                 'type'       => 'VARCHAR',
                 'constraint' => 255,

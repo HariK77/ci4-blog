@@ -60,6 +60,9 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
     $routes->get('posts/(:any)', 'UserPostController::show/$1');
     $routes->patch('posts/(:any)', 'UserPostController::update/$1');
     $routes->delete('posts', 'UserPostController::delete');
+
+    // upload images
+    $routes->post('posts/upload-image', 'UserPostController::saveImage');
 });
 
 // Authenticated -- Admin User

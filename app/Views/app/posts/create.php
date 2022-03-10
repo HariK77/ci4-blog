@@ -43,17 +43,17 @@
             <h4 class="mt-2">Add Post</h4>
             <?= $this->include('layouts/includes/messages') ?>
             <div class="row">
-                <form action="<?= base_url('posts') ?>" method="POST">
+                <form action="<?= base_url('posts') ?>" method="POST" enctype="multipart/form-data">
                     <?= csrf_field() ?>
                     <div class="form-floating-select">
-                        <label for="category_id">Select Category</label>
-                        <select class="form-select <?= getErrorClass($validation, 'title') ?>" id="category_id" name="category_id" type="select" placeholder="Select category...">
+                        <label for="id_category">Select Category</label>
+                        <select class="form-select <?= getErrorClass($validation, 'id_category') ?>" id="id_category" name="id_category" type="select" placeholder="Select category...">
                             <option selected disabled value="">Choose...</option>
                             <?php foreach ($categories as $category) : ?>
                                 <option value="<?= $category->id ?>"><?= $category->name ?></option>
                             <?php endforeach; ?>
                         </select>
-                        <div class="invalid-feedback"><?= getErrorMessage($validation, 'title') ?></div>
+                        <div class="invalid-feedback"><?= getErrorMessage($validation, 'id_category') ?></div>
                     </div>
                     <div class="form-floating">
                         <input class="form-control <?= getErrorClass($validation, 'title') ?>" id="title" name="title" type="text" placeholder="Enter your title..." />
@@ -61,9 +61,14 @@
                         <div class="invalid-feedback"><?= getErrorMessage($validation, 'title') ?></div>
                     </div>
                     <div class="form-floating">
-                        <input class="form-control <?= getErrorClass($validation, 'mini_title') ?>" id="mini_title" name="mini_title" type="mini_title" placeholder="Enter your mini title..." />
+                        <input class="form-control <?= getErrorClass($validation, 'mini_title') ?>" id="mini_title" name="mini_title" type="text" placeholder="Enter your mini title..." />
                         <label for="mini_title">Mini Title</label>
                         <div class="invalid-feedback"><?= getErrorMessage($validation, 'mini_title') ?></div>
+                    </div>
+                    <div class="form-floating">
+                        <input class="form-control <?= getErrorClass($validation, 'header_image') ?>" id="header_image" name="header_image" type="file" placeholder="Upload image" />
+                        <label for="header_image">Mini Title</label>
+                        <div class="invalid-feedback"><?= getErrorMessage($validation, 'header_image') ?></div>
                     </div>
                     <div class="mt-4">
                         <label for="post_content" style="color: #6c757d;">Post Content</label>
@@ -81,8 +86,8 @@
 
 <?= $this->section('js') ?>
 
-<!-- <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script> -->
-<script src="https://cdn.ckeditor.com/ckeditor5/32.0.0/classic/ckeditor.js"></script>
+<script src="<?= base_url('app/js/ckeditor-5-32.js') ?>"></script>
+
 
 <script>
     window.addEventListener('DOMContentLoaded', () => {
@@ -90,7 +95,7 @@
         ClassicEditor
             .create(document.querySelector('#post_content'))
             .then(editor => {
-                console.log(editor);
+                // console.log(editor);
             })
             .catch(error => {
                 console.error(error);
