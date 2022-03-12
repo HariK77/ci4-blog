@@ -14,8 +14,11 @@
                     <h2 class="subheading"><?= $post->mini_title ?></h2>
                     <span class="meta">
                         Posted by
-                        <a href="#!"><?= $post->name ?></a>
+                        <a href="#!"><?= $post->user ?></a>
                         on <?= formatDate($post->created_at, 1) ?>
+                        <span class="ms-3 btn btn-primary btn-sm">
+                            <?= $post->category ?>
+                        </span>
                     </span>
                 </div>
             </div>

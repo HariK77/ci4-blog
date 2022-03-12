@@ -14,7 +14,7 @@ class Post extends Model
     protected $returnType       = 'object';
     protected $useSoftDeletes   = true;
     protected $protectFields    = true;
-    protected $allowedFields    = ['id_user', 'id_category', 'title', 'mini_title', 'slug', 'post_content', 'header_image'];
+    protected $allowedFields    = ['id_user', 'id_category', 'title', 'mini_title', 'slug', 'post_content', 'header_image', 'created_at', 'updated_at', 'deleted_at'];
 
     // Dates
     protected $useTimestamps = true;
@@ -41,10 +41,20 @@ class Post extends Model
     protected $afterDelete    = [];
 
 
-    public function withUser()
+    public function withUserAndCategory()
     {
-        $this->builder()->select('posts.*, users.id, users.name, users.email')
-                    ->join('users', 'users.id = posts.id_user');
+        $this->builder()->select('posts.*, categories.name as category, users.id, users.name as user, users.email')
+                    ->join('users', 'users.id = posts.id_user')
+                    ->join('categories', 'categories.id = posts.id_category');
+        return $this;
+    }
+
+    public function ownPostsAndCategory($userId)
+    {
+        $this->builder()->select('posts.*, categories.name as category, users.id, users.name as user, users.email')
+                    ->join('users', 'users.id = posts.id_user')
+                    ->join('categories', 'categories.id = posts.id_category')
+                    ->where('users.id', $userId);
         return $this;
     }
 }
