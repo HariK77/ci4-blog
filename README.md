@@ -23,14 +23,14 @@ If any issues in installation visit this page
 
 ## Installation instructions
 
-- Clone the repository with, $ `git clone https://github.com/HariK77/ci4-blog.git`.
+- Clone the repository with, `$ git clone https://github.com/HariK77/ci4-blog.git`.
 - run `$ cd ci-4-blog`. 
 - run `$ composer install`.
 - run `$ sudo chmod -R 0777 writable/` (no need for windows xampp). 
 - run `$ cp .env.example .env` (In windows just rename the file manually).
 - configure db connections and base url in .env (change base url to `http://localhost/ci4-blog/public` in App.php also).
-- configure mail configuration in .env file, I'm using [maitrap](https://mailtrap.io) it is free for sending emails, login and get SMTP Settings and set `app.mail.smtpUser`, `app.mail.smtpPass`.
-- Note: if don't set `app.mail.smtpUser`, `app.mail.smtpPass`also, app will work, but u won't be able to how the emails will be.
+- configure mail configuration in .env file, I'm using [maitrap](https://mailtrap.io) it provides free service for sending emails from localhost, login and get SMTP Settings and set `app.mail.smtpUser`, `app.mail.smtpPass`.
+- Note: even if you don't set `app.mail.smtpUser`, `app.mail.smtpPass`, app will work, but u won't be able to check some email related functionalities.
 - set database configurations in .env and create a db named `ci4_blog`.
 - create database and run `$ php spark migrate`.
 - create dummy data in user table with `$ php spark db:seed UserSeeder`.
