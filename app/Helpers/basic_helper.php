@@ -62,27 +62,32 @@ function odd(...$params)
 
 function sendEmail($data)
 {
-    $email = \Config\Services::email();
-    $email->setTo($data['email']);
+    if (getenv('app.mail.smtpPass') && getenv('app.mail.smtpUser')) {
+        $email = \Config\Services::email();
+        $email->setTo($data['email']);
+    
+        if (isset($data['cc'])) {
+            $email->setCC($data['cc']);
+        }
+        if (isset($data['bcc'])) {
+            $email->setBCC($data['bcc']);
+        }
+        $email->setSubject($data['subject']);
+    
+        $view = \Config\Services::renderer();
+        $view->setData(['data' => $data['data']]);
+        $html = $view->render($data['view']);
+    
+        $email->setMessage($html);
+    
+        if ($email->send()) {
+            return true;
+        }
 
-    if (isset($data['cc'])) {
-        $email->setCC($data['cc']);
-    }
-    if (isset($data['bcc'])) {
-        $email->setBCC($data['bcc']);
-    }
-    $email->setSubject($data['subject']);
-
-    $view = \Config\Services::renderer();
-    $view->setData(['data' => $data['data']]);
-    $html = $view->render($data['view']);
-
-    $email->setMessage($html);
-
-    if ($email->send()) {
         return true;
     }
-    return false;
+
+    return true;
 }
 
 function getActiveClass($url)
