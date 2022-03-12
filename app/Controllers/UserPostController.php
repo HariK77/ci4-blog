@@ -24,18 +24,11 @@ class UserPostController extends BaseController
         $email_verified = $this->request->getVar('email_verified');
 
         $posts = $this->postModel
-                        ->withDeleted()
-                        // ->emailVerified($email_verified)
-                        // ->deleted($deleted)
-                        // ->search($search)
-                        // ->orderBy($order_by, 'ASC')
+                        ->ownPostsAndCategory(session('id'))
                         ->paginate($per_page);
 
         $total_records = $this->postModel
-                                ->withDeleted()
-                                // ->emailVerified($email_verified)
-                                // ->deleted($deleted)
-                                // ->search($search)
+                                ->ownPostsAndCategory(session('id'))
                                 ->countAllResults();
 
         $data = array(

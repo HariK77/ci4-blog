@@ -136,3 +136,14 @@ function time_elapsed_string($datetime, $full = false) {
     if (!$full) $string = array_slice($string, 0, 1);
     return $string ? implode(', ', $string) . ' ago' : 'just now';
 }
+
+function checkInputDate($date)
+{
+    $date = new DateTime($date);
+    $current = new DateTime('now'); 
+
+    if($date < $current) {
+        return $date->format('Y-m-d H:i:s');
+    }
+    return $current->format('Y-m-d H:i:s');
+}

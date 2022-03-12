@@ -30,15 +30,22 @@
                 </a>
                 <p class="post-meta">
                     Posted by
-                    <a href="#!"><?= $post->name ?></a>
+                    <a href="#!"><?= $post->user ?></a>
                     on <?= formatDate($post->created_at, 1) ?>
+                    <span class="ms-3 btn btn-primary btn-sm">
+                        <?= $post->category ?>
+                    </span>
                 </p>
+
             </div>
             <!-- Divider-->
             <hr class="my-4" />
             <?php endforeach; ?>
             <!-- Pager-->
-            <div class="d-flex justify-content-end mb-4"><a class="btn btn-primary text-uppercase" href="#!">Older Posts →</a></div>
+            
+            <div class="d-flex mb-4">
+            <?= $pager->links('default', 'bs_blog') ?>
+            </div>
         </div>
     </div>
 </div>

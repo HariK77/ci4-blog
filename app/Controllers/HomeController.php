@@ -25,29 +25,26 @@ class HomeController extends BaseController
         $email_verified = $this->request->getVar('email_verified');
 
         $posts = $this->postModel
-						->withUser()
-                        ->withDeleted()
+						->withUserAndCategory()
+                        // ->withDeleted()
                         // ->emailVerified($email_verified)
                         // ->deleted($deleted)
                         // ->search($search)
-                        // ->orderBy($order_by, 'ASC')
+                        ->orderBy('created_at', 'DESC')
                         ->paginate($per_page);
 
         $total_records = $this->postModel
-                                ->withDeleted()
+                                // ->withDeleted()
                                 // ->emailVerified($email_verified)
                                 // ->deleted($deleted)
                                 // ->search($search)
                                 ->countAllResults();
-
+		// odd($posts);
         $data = array(
             'posts' => $posts,
             'pager' => $this->postModel->pager,
             'showing_records' => count($posts),
             'total_records' => $total_records,
-            // 'active_types' => $this->postModel->getUserActiveTypes(),
-            // 'status_types' => $this->postModel->getUserStatusTypes(),
-            // 'order_by_types' => $this->postModel->getOrderByTypes(),
         );
 		// odd($data);
 
@@ -103,7 +100,7 @@ class HomeController extends BaseController
 
     public function showPost($slug)
     {
-		$post = $this->postModel->withUser()->where('slug', $slug)->first();
+		$post = $this->postModel->withUserAndCategory()->where('slug', $slug)->first();
         return view('app/pages/post', array('post' => $post));
     }
 

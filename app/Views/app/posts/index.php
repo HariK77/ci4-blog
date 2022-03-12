@@ -71,7 +71,7 @@
                             <div class="card-body pl-2">
                                 <h5 class="card-title"><?= $post->title ?></h5>
                                 <p class="card-text"><?= $post->mini_title ?></p>
-                                <p class="card-text"><small class="text-muted"><?= time_elapsed_string($post->created_at) ?></small></p>
+                                <p class="card-text"><small class="text-muted"><?= time_elapsed_string($post->created_at) ?></small> <small class="ms-3 text-muted"><?= $post->category ?></small></p>
                             </div>
                         </div>
                         <div class="col-md-2">

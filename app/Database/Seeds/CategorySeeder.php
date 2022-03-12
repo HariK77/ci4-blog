@@ -11,7 +11,7 @@ class CategorySeeder extends Seeder
     {
 		$model = new Category();
 
-        $categories = array('Technology', 'Nature', 'Animation', 'Health', 'Financial');
+        $categories = array('Technology', 'Nature', 'Space', 'Health', 'Financial', 'Crypto', 'Fashion', 'PHP', 'Codeigniter', 'Laravel', 'Symfony', 'Javascript', 'React');
 
         foreach ($categories as $category) {
             $model->insert(array('name' => $category));
