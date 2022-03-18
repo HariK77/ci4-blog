@@ -2,6 +2,9 @@
 
 This is simple blog app, made with [CodeIgniter4](http://codeigniter.com) framework and bootstrap5 html theme [Clean Blog](https://startbootstrap.com/theme/clean-blog). It has authentication, posts crud, pagination, server side datatables, email sending, populating fake data and admin dashboard etc., new features will be implemented soon.
 
+## Test Demo of the app
+https://hari.goinstaweb.com/
+
 More information about [CodeIgniter 4](http://codeigniter.com) framework can be found [here](https://codeigniter4.github.io/userguide/).
 
 ## Server Requirements
