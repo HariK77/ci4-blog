@@ -11,7 +11,7 @@
             <div class="col-md-10 col-lg-8 col-xl-7">
                 <div class="site-heading">
                     <h1><?= getenv('app.name'); ?></h1>
-                    <span class="subheading">Multiverse of Blog Posts</span>
+                    <span class="subheading">Multiverse of Blog Posts !!!!</span>
                 </div>
             </div>
         </div>
