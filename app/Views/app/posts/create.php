@@ -1,6 +1,6 @@
 <?= $this->extend('layouts/app') ?>
 
-<?= $this->section('title') ?>Add<?= $this->endSection() ?>
+<?= $this->section('title') ?>Add Post<?= $this->endSection() ?>
 
 <?= $this->section('bottomCss') ?>
 <style>
@@ -65,10 +65,17 @@
                         <label for="mini_title">Mini Title</label>
                         <div class="invalid-feedback"><?= getErrorMessage($validation, 'mini_title') ?></div>
                     </div>
-                    <div class="form-floating">
-                        <input class="form-control <?= getErrorClass($validation, 'header_image') ?>" id="header_image" name="header_image" type="file" placeholder="Upload image" />
-                        <label for="header_image">Mini Title</label>
-                        <div class="invalid-feedback"><?= getErrorMessage($validation, 'header_image') ?></div>
+                    <div class="row">
+                        <div class="col-md-6 py-5">
+                            <div class="form-floating">
+                                <input class="form-control <?= getErrorClass($validation, 'header_image') ?>" id="header_image" name="header_image"  onchange="readURL(this, 'preview_image');" accept='image/*' type="file" placeholder="Upload image" />
+                                <label for="header_image">Header Image</label>
+                                <div class="invalid-feedback"><?= getErrorMessage($validation, 'header_image') ?></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 my-3">
+                            <img src="<?= base_url('/app/img/no_image.png') ?>" id="preview_image" class="img-thumbnail" width="250px">
+                        </div>
                     </div>
                     <div class="mt-4">
                         <label for="post_content" style="color: #6c757d;">Post Content</label>
@@ -101,6 +108,16 @@
                 console.error(error);
             });
     });
+
+    const readURL = (input, previewElement) => {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById(previewElement).src = e.target.result
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
 </script>
 
 <?= $this->endSection() ?>

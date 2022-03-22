@@ -57,6 +57,7 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
     $routes->get('posts/create', 'UserPostController::create');
     $routes->post('posts', 'UserPostController::store');
     $routes->get('posts/edit/(:any)', 'UserPostController::edit/$1');
+    $routes->get('posts/undo-delete/(:any)', 'UserPostController::undoDelete/$1');
     $routes->get('posts/(:any)', 'UserPostController::show/$1');
     $routes->patch('posts/(:any)', 'UserPostController::update/$1');
     $routes->delete('posts', 'UserPostController::delete');
@@ -87,6 +88,7 @@ $routes->group('dashboard', ['filter' => 'admin'], function ($routes) {
     $routes->delete('users', 'Admin\UserController::delete');
 
     $routes->get('posts', 'Admin\PostController::index');
+    $routes->post('posts/get', 'Admin\PostController::get');
     $routes->get('posts/create', 'Admin\PostController::create');
     $routes->post('posts', 'Admin\PostController::store');
     $routes->get('posts/(:any)', 'Admin\PostController::show/$1');

@@ -37,15 +37,6 @@
                             <div class="invalid-feedback"><?= getErrorMessage($validation, 'password') ?></div>
                         </div>
                         <br />
-
-                        <div class="d-none" id="submitSuccessMessage">
-                            <div class="text-center mb-3">
-                                <div class="fw-bolder">Form submission successful!</div>
-                            </div>
-                        </div>
-                        <div class="d-none" id="submitErrorMessage">
-                            <div class="text-center text-danger mb-3">Error sending message!</div>
-                        </div>
                         <!-- Submit Button-->
                         <div>
                             <button class="btn btn-primary text-uppercase" id="submit-btn" type="submit">Submit</button>
