@@ -88,6 +88,51 @@ class ExcelController extends BaseController
 
 	public function validateExcelCoulmns($data)
 	{
-		
+		$validation = \Config\Services::validation();
+
+		$rules = array(
+			'name' => 'required',
+			'email' => 'required|valid_email',
+			'password' => 'required'
+		);
+
+		$errors = array();
+
+		$row = 2;
+		foreach ($data as $key => $item) {
+			$validation->reset();
+			$validation->setRules($rules);
+
+			if (!$validation->run($item)) {
+
+				$errorMsg = '';
+				$error_list = $validation->getErrors();
+
+				if (array_key_exists('name', $error_list)) {
+					$errorMsg = 'error on Row '. $row .' column A, '. $error_list['name'];
+				}
+
+				if (array_key_exists('email', $error_list)) {
+					$errorMsg = 'error on Row '. $row .' column B, '. $error_list['email'];
+				}
+
+				if (array_key_exists('password', $error_list)) {
+					$errorMsg = 'error on Row '. $row .' column C, '. $error_list['password'];
+				}
+				// $error_list['row'] = $row;
+				$errors[] = $errorMsg;
+			}
+
+			$row++;
+		}
+
+		$data['status'] = 'success';
+
+		if (count($errors)) {
+			$data['status'] = 'error';
+			$data['errors'] = $errors;
+		}
+
+		return $data;
 	}
 }

@@ -25,12 +25,14 @@ class UserPostController extends BaseController
 
         $posts = $this->postModel
                         ->ownPostsAndCategory(session('id'))
+                        ->withDeleted()
                         ->paginate($per_page);
 
         $total_records = $this->postModel
                                 ->ownPostsAndCategory(session('id'))
+                                ->withDeleted()
                                 ->countAllResults();
-
+        // odd($posts);
         $data = array(
             'posts' => $posts,
             'pager' => $this->postModel->pager,
@@ -58,7 +60,7 @@ class UserPostController extends BaseController
         $rules = array(
             'id_category' => 'required',
             'title' => 'required|min_length[20]',
-            'mini_title' => 'required|min_length[40]',
+            'mini_title' => 'required|min_length[30]',
             'header_image' => 'uploaded[header_image]|max_dims[header_image,1920,1080],mime_in[header_image,image/png,image/jpg],ext_in[header_image,png,jpg,gif],is_image[header_image]',
             'post_content' => 'required|min_length[200]',
         );
@@ -114,27 +116,43 @@ class UserPostController extends BaseController
 
     public function edit($id)
     {
-        $user = $this->postModel->find($id);
-        $validation = $this->validation;
-        return view('dashboard/users/edit', compact('user', 'validation'));
+        $data = array(
+            'validation' => $this->validation,
+            'categories' => $this->categoryModel->findAll(),
+            'post'      => $this->postModel->find($id)
+        );
+        return view('app/posts/edit', $data);
     }
 
     public function update($id)
     {
         $rules = array(
-            'name' => 'required|min_length[3]',
-            'email' => 'required|valid_email|is_unique[users.email,id,' . $id . ']',
-            'phone' => 'required|exact_length[10]|max_length[10]',
+            'id_category' => 'required',
+            'title' => 'required|min_length[20]',
+            'mini_title' => 'required|min_length[30]',
+            'post_content' => 'required|min_length[200]',
         );
 
-        if ($this->request->getPost('password')) {
-            $rules['password'] = 'required|min_length[6]';
-            $rules['confirm_password'] = 'required|matches[password]';
+        $file = $this->request->getFile('header_image');
+
+        if ($file->isValid()) {
+            $rules['header_image'] = 'uploaded[header_image]|max_dims[header_image,1920,1080],mime_in[header_image,image/png,image/jpg],ext_in[header_image,png,jpg,gif],is_image[header_image]';
         }
 
         $messages = array(
-            'confirm_password' => array(
-                'matches' => 'The confirm password field does not match the password field.'
+            'id_category' => array(
+                'required' => 'Please select a category.'
+            ),
+            'mini_title' => array(
+                'required' => 'Mini title field is required.',
+                'min_length' => 'The mini title field must be at least 40 characters in length.'
+            ),
+            'header_image' => array(
+                'uploaded' => 'Please upload valid image file.',
+            ),
+            'post_content' => array(
+                'required' => 'Please add some post content.',
+                'min_length' => 'The post content field must be at least 200 characters in length.'
             )
         );
 
@@ -146,34 +164,44 @@ class UserPostController extends BaseController
         }
 
         $requestData = $this->request->getPost();
+
+        if ($file->isValid()) {
+            $newName = $file->getRandomName();
+            $file->move('uploads', $newName);
+            $requestData['header_image'] = 'uploads/'.$newName;
+        }
+
+        $requestData['mini_title'] = $this->request->getPost('mini_title');
+        $requestData['slug'] = slug($this->request->getPost('mini_title'));
+        $requestData['id_user'] = session('id');
+
         $result = $this->postModel->update($id, $requestData);
 
         if ($result) {
-            return redirect()->to('dashboard/users')->with("success", "User details has been updated.");
+            return redirect()->to('posts')->with("success", "Post has been updated successfully");
         }
-
         return redirect()->back()->with("error", "Some unknown error happened.");
     }
 
     public function delete()
     {
-
         $type = $this->request->getPost('type');
         $id = $this->request->getPost('id');
 
         $purge = false;
-        $message = "User has been soft deleted successfully";
+        $message = "Post has been soft deleted successfully";
         if ($type == 'permanent') {
             $purge = true;
-            $message = "User has been deleted permanently";
+            $message = "Post has been deleted permanently";
         }
         $this->postModel->delete($id, $purge);
         return redirect()->back()->with("success", $message);
     }
 
-    public function saveImage()
+    public function undoDelete($id)
     {
-        dd('hi');
+        $this->postModel->update($id, array('deleted_at' => null));
+        return redirect()->back()->with("success", "Post has been restored successfully");
     }
 
 }

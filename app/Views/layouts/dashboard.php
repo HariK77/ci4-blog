@@ -72,7 +72,7 @@
                         <li><a href="javascript:void(0);" class="waves-effect"><i class="mdi mdi-library-books"></i><span> Posts <span class="float-right menu-arrow"><i class="mdi mdi-chevron-right"></i></span></span></a>
                             <ul class="submenu">
                                 <li><a href="<?= base_url('dashboard/posts') ?>">Posts</a></li>
-                                <li><a href="<?= base_url('dashboard/posts/create') ?>">Create</a></li>
+                                <!-- <li><a href="<?= base_url('dashboard/posts/create') ?>">Create</a></li> -->
                             </ul>
                         </li>
                         <li><a href="<?= base_url('') ?>" class="waves-effect"><i class="mdi mdi-chevron-double-right"></i>

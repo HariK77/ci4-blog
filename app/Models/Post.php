@@ -43,7 +43,7 @@ class Post extends Model
 
     public function withUserAndCategory()
     {
-        $this->builder()->select('posts.*, categories.name as category, users.id, users.name as user, users.email')
+        $this->builder()->select('posts.*, categories.name as category, users.name as user, users.email')
                     ->join('users', 'users.id = posts.id_user')
                     ->join('categories', 'categories.id = posts.id_category');
         return $this;
@@ -51,7 +51,7 @@ class Post extends Model
 
     public function ownPostsAndCategory($userId)
     {
-        $this->builder()->select('posts.*, categories.name as category, users.id, users.name as user, users.email')
+        $this->builder()->select('posts.*, categories.name as category, users.name as user, users.email')
                     ->join('users', 'users.id = posts.id_user')
                     ->join('categories', 'categories.id = posts.id_category')
                     ->where('users.id', $userId);
