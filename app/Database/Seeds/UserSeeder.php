@@ -25,7 +25,7 @@ class UserSeeder extends Seeder
 			)
 		);
 
-		for ($i = 0; $i < 999; $i++) {
+		for ($i = 0; $i < 499; $i++) {
 			$model->insert($this->generateUser());
 		}
 	}

@@ -62,9 +62,9 @@
                         <div class="invalid-feedback"><?= getErrorMessage($validation, 'title') ?></div>
                     </div>
                     <div class="form-floating">
-                        <input class="form-control <?= getErrorClass($validation, 'mini_title') ?>" id="mini_title" name="mini_title" value="<?= $post->mini_title ?>" type="text" placeholder="Enter your mini title..." />
-                        <label for="mini_title">Mini Title</label>
-                        <div class="invalid-feedback"><?= getErrorMessage($validation, 'mini_title') ?></div>
+                        <input class="form-control <?= getErrorClass($validation, 'sub_title') ?>" id="sub_title" name="sub_title" value="<?= $post->sub_title ?>" type="text" placeholder="Enter your mini title..." />
+                        <label for="sub_title">Mini Title</label>
+                        <div class="invalid-feedback"><?= getErrorMessage($validation, 'sub_title') ?></div>
                     </div>
                     <div class="row">
                         <div class="col-md-6 py-5">

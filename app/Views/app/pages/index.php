@@ -21,12 +21,13 @@
 <div class="container px-4 px-lg-5">
     <div class="row gx-4 gx-lg-5 justify-content-center">
         <div class="col-md-10 col-lg-8 col-xl-7">
+            <?php if (count($posts)): ?>
             <?php foreach($posts as $post): ?>
             <!-- Post preview-->
             <div class="post-preview">
                 <a href="<?= base_url($post->slug) ?>">
                     <h2 class="post-title"><?= $post->title ?></h2>
-                    <h3 class="post-subtitle"><?= $post->mini_title ?></h3>
+                    <h3 class="post-subtitle"><?= $post->sub_title ?></h3>
                 </a>
                 <p class="post-meta">
                     Posted by
@@ -41,11 +42,15 @@
             <!-- Divider-->
             <hr class="my-4" />
             <?php endforeach; ?>
+            <?php else: ?>
+                <h3 class="text-center">No Posts available</h3>
+            <?php endif; ?>
             <!-- Pager-->
-            
+            <?php if (count($posts)): ?>
             <div class="d-flex mb-4">
             <?= $pager->links('default', 'bs_blog') ?>
             </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>

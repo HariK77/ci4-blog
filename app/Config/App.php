@@ -23,7 +23,7 @@ class App extends BaseConfig
      *
      * @var string
      */
-    public $baseURL = 'https://ci4.blog.com/';
+    public $baseURL = 'https://localhost/ci4-blog/public';
 
     /**
      * --------------------------------------------------------------------------

@@ -30,7 +30,7 @@ class Post extends Migration
                 'type'       => 'VARCHAR',
                 'constraint' => 255,
             ],
-            'mini_title'       => [
+            'sub_title'       => [
                 'type'       => 'VARCHAR',
                 'constraint' => 255,
                 'null'      => true,

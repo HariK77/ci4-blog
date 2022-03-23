@@ -45,7 +45,7 @@ class PostSeeder extends Seeder
             'id_user' => $userIds[rand(0, count($userIds) - 1)],
             'id_category' => $categoryId,
             'title' => $title,
-            'mini_title' => $title,
+            'sub_title' => $title,
             'slug' => slug($title),
             'post_content' => $postContent,
             'header_image' => $this->getImageRelatedToCategory($categoryName),
