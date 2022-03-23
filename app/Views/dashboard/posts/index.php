@@ -27,13 +27,37 @@
         <div class="card-header">
             <div class="d-flex">
                 <h5>Posts</h5>
-                <button class="btn btn-primary ml-auto" id="add-form">Add Post</button>
+                <button data-toggle="modal" data-target="#modal" class="btn btn-primary ml-auto" id="add-form">Add Post</button>
             </div>
         </div>
         <div class="card-body">
             <div class="table-responsive">
                 <table id="datatable" class="table table-striped table-bordered dt-responsive" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                 </table>
+            </div>
+        </div>
+    </div>
+    <div id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title mt-0" id="modalLabel">Add Post</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group row">
+                        <label for="name" class="col-sm-2 col-form-label">Name</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" type="text" value="" id="name">
+                            <div class="invalid-feedback">Test Message</div>
+                        </div>
+                        <input type="hidden" name="post_id" value="" id="post_id">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary waves-effect waves-light" id="save-btn">Add</button>
+                </div>
             </div>
         </div>
     </div>
@@ -97,10 +121,10 @@
                     title: 'Title',
                     data: 'title'
                 },
-                // {
-                //     title: 'Mini Title',
-                //     data: 'mini_title'
-                // },
+                {
+                    title: 'Sub Title',
+                    data: 'sub_title'
+                },
                 {
                     title: 'Url',
                     data: 'slug',
@@ -190,6 +214,115 @@
 
         });
     });
+
+    $('#save-btn').on('click', function() {
+        let params = {
+            name: $('#name').val(),
+            '<?= csrf_token() ?>': '<?= csrf_hash() ?>'
+        }
+
+        let url = '<?= base_url('/dashboard/categories') ?>';
+
+        if ($('#category_id').val()) {
+            url = '<?= base_url('/dashboard/categories') ?>/' + $('#category_id').val();
+            params._method = 'PATCH';
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: params,
+            dataType: 'json',
+            beforeSend: function() {
+                $('.is-invalid').remove();
+                $("#save-btn").prop('disabled', true);
+                $("#save-btn").text('Sending..');
+            },
+            success: function(response) {
+                updateSubmitBtnText();
+                $('#modal').modal('toggle');
+                $('#name').val('');
+                $('#datatable').dataTable().fnDraw(false);
+            },
+            error: function(response) {
+                let errors = response.responseJSON.messages.errors;
+                updateSubmitBtnText();
+                for (let error in errors) {
+                    let element = document.getElementById(error);
+                    element.classList.add('is-invalid');
+                    element.nextElementSibling.innerHTML = errors[error];
+                }
+                Array.from(document.querySelectorAll('.is-invalid')).forEach(errorElement => {
+                    errorElement.addEventListener('change', e => e.target.classList.remove('is-invalid'));
+                })
+            }
+        });
+
+    })
+
+    $(document).on('click', '.edit-category', function() {
+
+        let categoryId = $(this).data('id');
+
+        $.ajax({
+            type: 'GET',
+            url: '<?= base_url('/dashboard/categories') ?>/' + categoryId,
+            dataType: 'json',
+            success: function(response) {
+                $("#save-btn").text('Update');
+                $('#modalLabel').text('Update Category');
+                $('#name').val(response.data.name);
+                $('#category_id').val(response.data.id);
+                $('#modal').modal('toggle');
+            },
+            error: function(response) {
+                alert('some error happened');
+            }
+        });
+    });
+
+    $(document).on('click', '.delete-category', function() {
+
+        if (!confirm('Are you sure !')) return;
+
+        let categoryId = $(this).data('id');
+        let params = {
+            category_id: categoryId,
+            '<?= csrf_token() ?>': '<?= csrf_hash() ?>',
+            _method: 'DELETE'
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '<?= base_url('/dashboard/categories') ?>/' + categoryId,
+            dataType: 'json',
+            data: params,
+            success: function(response) {
+                $('#datatable').dataTable().fnDraw(false);
+            },
+            error: function(response) {
+                alert('some error happened');
+            }
+        });
+    });
+
+    $('#modal').on('hidden.bs.modal', function(e) {
+        $('#name').val('');
+        $('#category_id').val();
+        $("#save-btn").text('Add');
+        $('#modalLabel').text('Add Category');
+        $('.is-invalid').removeClass('is-invalid');
+    });
+
+    function updateSubmitBtnText() {
+        $("#save-btn").prop('disabled', false);
+
+        if ($('#category_id').val()) {
+            $("#save-btn").text('Update');
+        } else {
+            $("#save-btn").text('Add');
+        }
+    }
 </script>
 
 <?= $this->endSection() ?>

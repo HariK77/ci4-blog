@@ -11,7 +11,7 @@
             <div class="col-md-10 col-lg-8 col-xl-7">
                 <div class="post-heading">
                     <h1><?= $post->title ?></h1>
-                    <h2 class="subheading"><?= $post->mini_title ?></h2>
+                    <h2 class="subheading"><?= $post->sub_title ?></h2>
                     <span class="meta">
                         Posted by
                         <a href="#!"><?= $post->user ?></a>

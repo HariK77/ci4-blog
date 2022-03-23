@@ -60,7 +60,7 @@ class UserPostController extends BaseController
         $rules = array(
             'id_category' => 'required',
             'title' => 'required|min_length[20]',
-            'mini_title' => 'required|min_length[30]',
+            'sub_title' => 'required|min_length[30]',
             'header_image' => 'uploaded[header_image]|max_dims[header_image,1920,1080],mime_in[header_image,image/png,image/jpg],ext_in[header_image,png,jpg,gif],is_image[header_image]',
             'post_content' => 'required|min_length[200]',
         );
@@ -71,7 +71,7 @@ class UserPostController extends BaseController
             'id_category' => array(
                 'required' => 'Please select a category.'
             ),
-            'mini_title' => array(
+            'sub_title' => array(
                 'required' => 'Mini title field is required.',
                 'min_length' => 'The mini title field must be at least 40 characters in length.'
             ),
@@ -97,8 +97,8 @@ class UserPostController extends BaseController
 
         $requestData = $this->request->getPost();
         $requestData['header_image'] = 'uploads/'.$newName;
-        $requestData['mini_title'] = $this->request->getPost('mini_title');
-        $requestData['slug'] = slug($this->request->getPost('mini_title'));
+        $requestData['sub_title'] = $this->request->getPost('sub_title');
+        $requestData['slug'] = slug($this->request->getPost('title'));
         $requestData['id_user'] = session('id');
 
         $result = $this->postModel->insert($requestData);
@@ -137,7 +137,7 @@ class UserPostController extends BaseController
         $rules = array(
             'id_category' => 'required',
             'title' => 'required|min_length[20]',
-            'mini_title' => 'required|min_length[30]',
+            'sub_title' => 'required|min_length[30]',
             'post_content' => 'required|min_length[200]',
         );
 
@@ -151,7 +151,7 @@ class UserPostController extends BaseController
             'id_category' => array(
                 'required' => 'Please select a category.'
             ),
-            'mini_title' => array(
+            'sub_title' => array(
                 'required' => 'Mini title field is required.',
                 'min_length' => 'The mini title field must be at least 40 characters in length.'
             ),
@@ -179,8 +179,8 @@ class UserPostController extends BaseController
             $requestData['header_image'] = 'uploads/'.$newName;
         }
 
-        $requestData['mini_title'] = $this->request->getPost('mini_title');
-        $requestData['slug'] = slug($this->request->getPost('mini_title'));
+        $requestData['sub_title'] = $this->request->getPost('sub_title');
+        $requestData['slug'] = slug($this->request->getPost('title'));
 
         $result = $this->postModel->update($id, $requestData);
 
@@ -211,7 +211,12 @@ class UserPostController extends BaseController
 
     public function undoDelete($id)
     {
-        if (!$this->checkPostExistsBelongsToUser($id)) {
+        $post = $this->postModel->withdeleted()->find($id);
+        if (!$post) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        }
+
+        if ($post->id_user !== session('id')) {
             return redirect()->to('posts')->with("error", "You are not authorized.");
         }
         $this->postModel->update($id, array('deleted_at' => null));

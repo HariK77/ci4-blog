@@ -71,7 +71,7 @@
                         <div class="col-md-8">
                             <div class="card-body pl-2">
                                 <h5 class="card-title"><?= $post->title ?></h5>
-                                <p class="card-text"><?= $post->mini_title ?></p>
+                                <p class="card-text"><?= $post->sub_title ?></p>
                                 <p class="card-text">
                                     <small class="text-muted"><?= $post->category ?></small>
                                     <small class="ms-3 text-muted">Created On: <?= formatDate($post->created_at, 1) ?></small>
