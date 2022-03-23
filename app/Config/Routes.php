@@ -104,6 +104,11 @@ $routes->get('contact', 'HomeController::contact');
 $routes->post('contact', 'HomeController::contactSubmit');
 $routes->get('(:any)', 'HomeController::showPost/$1');
 
+// All Error Pages
+$routes->set404Override(function(){
+    return view('errors/custom/error_404.php');
+});
+
 /*
  * --------------------------------------------------------------------
  * Additional Routing

@@ -78,19 +78,14 @@ class HomeController extends BaseController
 
         } else {
 
-			$email = \Config\Services::email();
-			$email->setTo($this->request->getVar('email'));
-			// $email->setCC('another@another-example.com');
-			// $email->setBCC('them@their-example.com');	
-			$email->setSubject('Enquiry from ' . getenv('app.name'));
+			$data = array(
+                'data' => $this->request->getVar(),
+                'email' => $this->request->getPost('email'),
+                'subject' => 'Enquiry from ' . getenv('app.name'),
+                'view' => 'emails/enquiry.php',
+            );
 
-			$view = Services::renderer();
-			$view->setData(['data' => $this->request->getVar()]);
-			$html = $view->render('emails/enquiry.php');
-
-			$email->setMessage($html);
-
-			if ($email->send()) {
+			if (sendEmail($data)) {
 				return redirect()->back()->with("success", "Form submitited successfully");
 			}
 
@@ -101,6 +96,9 @@ class HomeController extends BaseController
     public function showPost($slug)
     {
 		$post = $this->postModel->withUserAndCategory()->where('slug', $slug)->first();
+		if (!$post) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        }
         return view('app/pages/post', array('post' => $post));
     }
 
