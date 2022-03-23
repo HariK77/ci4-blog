@@ -57,4 +57,18 @@ class Post extends Model
                     ->where('users.id', $userId);
         return $this;
     }
+
+    public function withSearch($searchParam)
+    {
+        $this->builder()->like('posts.id', $searchParam);
+        $this->builder()->orLike('users.name', $searchParam);
+        $this->builder()->orLike('categories.name', $searchParam);
+        $this->builder()->orLike('posts.title', $searchParam);
+        $this->builder()->orLike('posts.sub_title', $searchParam);
+        $this->builder()->orLike('posts.slug', $searchParam);
+        // $this->builder()->orLike('posts.post_content', $searchParam);
+        $this->builder()->orLike('posts.created_at', $searchParam);
+        $this->builder()->orLike('posts.updated_at', $searchParam);
+        return $this;
+    }
 }
