@@ -42,14 +42,14 @@ class CategoryController extends BaseController
             $showingRecords = count($records);
             $totalRecords = $this->category
                                 ->like('name', $search['value'])
-                                ->countAll();
+                                ->countAllResults();
         } else {
             $records = $this->category
                             ->orderBy($columns[$orderBy[0]['column']], $orderBy[0]['dir'])
                             ->findAll($length, $start);
 
             $showingRecords = count($records);
-            $totalRecords = $this->category->countAll();
+            $totalRecords = $this->category->countAllResults();
         }
 
         $result = array(

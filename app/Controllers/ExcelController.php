@@ -17,18 +17,7 @@ class ExcelController extends BaseController
 		$this->user = new User();
 	}
 
-	public function index()
-	{
-		$users = $this->user->paginate(10);
-		$data = array(
-			'validation' => $this->validation,
-			'users' => $users,
-			'pager' => $this->user->pager
-		);
-		return view('manage/excel/index', $data);
-	}
-
-	public function excelExport()
+	public function export()
 	{
 		$users = $this->user->findAll();
 
@@ -38,33 +27,42 @@ class ExcelController extends BaseController
 		$sheet->setCellValue('A1', 'Id');
 		$sheet->setCellValue('B1', 'Name');
 		$sheet->setCellValue('C1', 'Email');
-		$sheet->setCellValue('D1', 'Created At');
-		$sheet->setCellValue('E1', 'Updated At');
+		$sheet->setCellValue('D1', 'Phone');
+		$sheet->setCellValue('E1', 'Email Verified');
+		$sheet->setCellValue('F1', 'Created At');
+		$sheet->setCellValue('G1', 'Updated At');
+		$sheet->setCellValue('H1', 'Deleted At');
 
 		$sheet->getColumnDimension('A')->setAutoSize(true);
 		$sheet->getColumnDimension('B')->setAutoSize(true);
 		$sheet->getColumnDimension('C')->setAutoSize(true);
 		$sheet->getColumnDimension('D')->setAutoSize(true);
 		$sheet->getColumnDimension('E')->setAutoSize(true);
+		$sheet->getColumnDimension('F')->setAutoSize(true);
+		$sheet->getColumnDimension('G')->setAutoSize(true);
+		$sheet->getColumnDimension('H')->setAutoSize(true);
 
 		$rows = 2;
 		foreach ($users as $user) {
 			$sheet->setCellValue('A' . $rows, $user->id);
 			$sheet->setCellValue('B' . $rows, $user->name);
 			$sheet->setCellValue('C' . $rows, $user->email);
-			$sheet->setCellValue('D' . $rows, formatDate($user->created_at));
-			$sheet->setCellValue('E' . $rows, formatDate($user->updated_at));
+			$sheet->setCellValue('D' . $rows, $user->phone);
+			$sheet->setCellValue('E' . $rows, $user->email_verified ? 'verified' : 'non verified');
+			$sheet->setCellValue('F' . $rows, formatDate($user->created_at, 1));
+			$sheet->setCellValue('G' . $rows, formatDate($user->updated_at, 1));
+			$sheet->setCellValue('H' . $rows, formatDate($user->deleted_at, 1));
 			$rows++;
 		}
 
 		$writer = new Xlsx($spreadsheet);
-		$filePath = 'uploads/users.xlsx';
+		$filePath = 'uploads/users'. time() .'.xlsx';
 		$writer->save($filePath);
 
 		download($filePath);
 	}
 
-	public function excelImport()
+	public function import()
 	{
 		$rules = array(
 			'file' => 'uploaded[file]|max_size[file,2048]|ext_in[file,xlsx]'

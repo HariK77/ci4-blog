@@ -38,20 +38,53 @@
         </div>
     </div>
     <div id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title mt-0" id="modalLabel">Add Post</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 </div>
                 <div class="modal-body">
-                    <div class="form-group row">
-                        <label for="name" class="col-sm-2 col-form-label">Name</label>
-                        <div class="col-sm-10">
-                            <input class="form-control" type="text" value="" id="name">
-                            <div class="invalid-feedback">Test Message</div>
-                        </div>
-                        <input type="hidden" name="post_id" value="" id="post_id">
+                    <div class="row">
+                        <form action="<?= base_url('posts') ?>" method="POST" enctype="multipart/form-data">
+                            <?= csrf_field() ?>
+                            <div class="form-floating-select">
+                                <label for="id_category">Select Category</label>
+                                <select class="form-control" id="id_category" name="id_category" type="select" placeholder="Select category...">
+                                    <option selected disabled value="">Choose...</option>
+                                    <?php foreach ($categories as $category) : ?>
+                                        <option value="<?= $category->id ?>"><?= $category->name ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                            <div class="form-floating">
+                                <input class="form-control" id="title" name="title" type="text" placeholder="Enter your title..." />
+                                <label for="title">Title</label>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                            <div class="form-floating">
+                                <input class="form-control" id="sub_title" name="sub_title" type="text" placeholder="Enter your mini title..." />
+                                <label for="sub_title">Mini Title</label>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 py-5">
+                                    <div class="form-floating">
+                                        <input class="form-control" id="header_image" name="header_image" onchange="readURL(this, 'preview_image');" accept='image/*' type="file" placeholder="Upload image" />
+                                        <label for="header_image">Header Image</label>
+                                        <div class="invalid-feedback"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 my-3">
+                                    <img src="<?= base_url('/app/img/no_image.png') ?>" id="preview_image" class="img-thumbnail" width="250px">
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <label for="post_content" style="color: #6c757d;">Post Content</label>
+                                <textarea class="form-control" id="post_content" name="post_content" placeholder="Enter your post content..."></textarea>
+                                <div class="invalid-feedback"></div>
+                            </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -82,8 +115,22 @@
 <!-- Responsive examples -->
 <script src="<?= base_url('/dboard/plugins/datatables/dataTables.responsive.min.js') ?>"></script>
 <script src="<?= base_url('/dboard/plugins/datatables/responsive.bootstrap4.min.js') ?>"></script>
+<!-- ck editor -->
+<script src="<?= base_url('app/js/ckeditor-5-32.js') ?>"></script>
 
 <script>
+    window.addEventListener('DOMContentLoaded', () => {
+        // tinymce.init({selector:'#post_content'});
+        ClassicEditor
+            .create(document.querySelector('#post_content'))
+            .then(editor => {
+                // console.log(editor);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    });
+
     var postsTable = '';
     $(document).ready(function() {
         // $("#datatable").DataTable({
@@ -97,25 +144,27 @@
             serverSide: true,
             // cache: false,
             // destroy: true,
-            // order: [0],
+            sorting: [
+                [8, 'desc']
+            ],
             // searching: false,
             // ordering: false,
             // info: false,
             // lengthChange: false,
+            searchDelay: 2000,
+            dom: 'Bfrtip',
             lengthChange: !1,
-            buttons: ["copy", "excel", "pdf", "colvis"],
-            columns: [
-                {
+            columns: [{
                     title: 'Id',
                     data: 'id'
                 },
                 {
                     title: 'User',
-                    data: 'id_user'
+                    data: 'user'
                 },
                 {
                     title: 'Category',
-                    data: 'id_category'
+                    data: 'category'
                 },
                 {
                     title: 'Title',
@@ -176,19 +225,74 @@
                 //     return data;
                 // }
             },
-            columnDefs: [
-                {
+            columnDefs: [{
                     orderable: false,
-                    targets: [2]
+                    targets: [5, 6, 7, 10]
                 },
                 {
                     searchable: false,
-                    targets: [0, 2]
+                    targets: [0, 5, 6, 7, 10]
                 }
             ],
+            buttons: {
+                dom: {
+                    button: {
+                        className: 'btn btn-primary'
+                    }
+                },
+                buttons: [{
+                        extend: 'excelHtml5',
+                        text: '<i class="fa fa-file-excel-o"></i> Export Excel',
+                        titleAttr: 'Excel',
+                        title: 'Posts Excel',
+                        className: 'excel-btn',
+                        // footer: true,
+                        // exportOptions: {
+                        //     // columns: getColumns(),
+                        //     format : {
+                        //         header: function(data, row, column, node) {
+                        //             console.log(typeof data);
+                        //             return data;
+                        //         },
+                        //         body: function ( data, row, column, node ) {
+                        //             console.log(data, row, column);
+                        //             return data;
+                        //         },
+                        //         footer : function (data, column, row){
+                        //             if(column == 0){
+                        //                 return 'Total';
+                        //             }else{
+                        //                 var table = $('#reports_t_' + tableNum).DataTable();
+                        //                 var columnData = table.column(column).data().toArray();
+                        //                 return columnData.reduce((a, b) => a + parseInt(b), 0);
+                        //             }
+                        //         }
+                        //     }
+                        // }
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<i class="fa fa-file-pdf-o"></i> Export PDF',
+                        titleAttr: 'PDF',
+                        title: 'Posts Pdf',
+                        className: 'pdf-btn',
+                        // orientation: 'landscape',
+                        // pageSize: 'LEGAL',
+                        //   footer: true,
+                        exportOptions: {
+                            //   columns: ':visible',
+                            //   format: {
+                            //       footer: function(data, row, column, node) {
+                            //           return data.replace(/\s/g, '');
+                            //       }
+                            //   }
+                        },
+                    }
+                ]
+            },
             language: {
                 info: "Showing page _PAGE_ of _PAGES_",
-                infoFiltered: "",
+                infoFiltered: "(Showing _START_ to _END_ of _TOTAL_ entries)",
                 // emptyTable: "No data available in table",
                 // info: "Showing _START_ to _END_ of _TOTAL_ entries",
                 // infoEmpty: "No entries found",
@@ -205,10 +309,10 @@
                 //     first: "First"
                 // }
             },
-            initComplete: function (Settings, json) {
-                
+            initComplete: function(Settings, json) {
+
             },
-            fnDrawCallback: function (oSettings) {
+            fnDrawCallback: function(oSettings) {
                 console.log(oSettings);
             },
 
@@ -313,6 +417,16 @@
         $('#modalLabel').text('Add Category');
         $('.is-invalid').removeClass('is-invalid');
     });
+
+    const readURL = (input, previewElement) => {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById(previewElement).src = e.target.result
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
 
     function updateSubmitBtnText() {
         $("#save-btn").prop('disabled', false);

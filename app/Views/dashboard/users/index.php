@@ -53,6 +53,12 @@
             <div class="mt-4">
                 <button id="search-btn" class="btn btn-primary">Search</button>
                 <button id="clear-search-btn" class="btn btn-primary ml-2">Clear Search</button>
+                <a href="<?= base_url('dashboard/users/export') ?>">
+                    <button id="export-excel-btn" class="btn btn-primary ml-2">Export</button>
+                </a>
+                <!-- <a href="<?= base_url('dashboard/users/export') ?>">
+                    <button id="export-excel-btn" class="btn btn-primary ml-2">Global Export</button>
+                </a> -->
             </div>
         </div>
     </div>

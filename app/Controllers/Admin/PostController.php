@@ -3,6 +3,7 @@
 namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
+use App\Models\Category;
 use App\Models\Post;
 use CodeIgniter\API\ResponseTrait;
 
@@ -13,10 +14,12 @@ class PostController extends BaseController
     function __construct()
     {
         $this->postModel = new Post();
+        $this->categoryModel = new Category();
     }
     public function index()
     {
-        return view('dashboard/posts/index');
+        $categories = $this->categoryModel->findAll();
+        return view('dashboard/posts/index', ['categories' => $categories]);
     }
 
     public function get()
@@ -29,27 +32,39 @@ class PostController extends BaseController
         $orderBy = $this->request->getPost('order');
 
         $columns = array(
-            '0' => 'id',
-            '1' => 'title'
+            '0' => 'posts.id',
+            '1' => 'users.name',
+            '2' => 'categories.name',
+            '3' => 'posts.title',
+            '4' => 'posts.sub_title',
+            '5' => 'posts.slug',
+            '6' => 'posts.post_content',
+            '8' => 'posts.created_at',
+            '9' => 'posts.updated_at'
         );
 
         if ($search['value']) {
             $records = $this->postModel
-                            ->like('name', $search['value'])
+                            ->withUserAndCategory()
+                            ->withSearch($search['value'])
                             ->orderBy($columns[$orderBy[0]['column']], $orderBy[0]['dir'])
                             ->findAll($length, $start);
 
             $showingRecords = count($records);
             $totalRecords = $this->postModel
-                                ->like('name', $search['value'])
-                                ->countAll();
+                                ->withUserAndCategory()
+                                ->withSearch($search['value'])
+                                ->orderBy($columns[$orderBy[0]['column']], $orderBy[0]['dir'])
+                                ->countAllResults();
         } else {
             $records = $this->postModel
+                            ->withUserAndCategory()
                             ->orderBy($columns[$orderBy[0]['column']], $orderBy[0]['dir'])
                             ->findAll($length, $start);
+            // odd($this->postModel->getLastQuery()->getQuery());
 
             $showingRecords = count($records);
-            $totalRecords = $this->postModel->countAll();
+            $totalRecords = $this->postModel->countAllResults();
         }
 
         $result = array(
