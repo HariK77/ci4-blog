@@ -74,10 +74,10 @@
                                 <p class="card-text"><?= $post->mini_title ?></p>
                                 <p class="card-text">
                                     <small class="text-muted"><?= $post->category ?></small>
-                                    <small class="ms-3 text-muted">Created On: <?= formatDate($post->created_at) ?></small>
-                                    <small class="ms-3 text-muted">Last Updated: <?= formatDate($post->updated_at) ?></small>
+                                    <small class="ms-3 text-muted">Created On: <?= formatDate($post->created_at, 1) ?></small>
+                                    <small class="ms-3 text-muted">Last Updated: <?= formatDate($post->updated_at, 1) ?></small>
                                     <?php if($post->deleted_at): ?>
-                                    <small class="ms-3 text-muted">Deleted On: <?= formatDate($post->deleted_at) ?></small>
+                                    <small class="ms-3 text-muted">Deleted On: <?= formatDate($post->deleted_at, 1) ?></small>
                                     <?php endif ?>
                                 </p>
                             </div>
@@ -128,7 +128,11 @@
         for (const deleteBtn of deleteBtns) {
 
             deleteBtn.addEventListener('click', () => {
-                if (!confirm('Are you sure !')) return;
+                deleteBtn.disabled = true;
+                if (!confirm('Are you sure !')) {
+                    deleteBtn.disabled = false;
+                    return
+                };
 
                 id.value = deleteBtn.getAttribute('data-id');
 

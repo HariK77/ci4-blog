@@ -116,6 +116,10 @@ class UserPostController extends BaseController
 
     public function edit($id)
     {
+        if (!$this->checkPostExistsBelongsToUser($id)) {
+            return redirect()->to('posts')->with("error", "You are not authorized.");
+        }
+
         $data = array(
             'validation' => $this->validation,
             'categories' => $this->categoryModel->findAll(),
@@ -126,6 +130,10 @@ class UserPostController extends BaseController
 
     public function update($id)
     {
+        if (!$this->checkPostExistsBelongsToUser($id)) {
+            return redirect()->to('posts')->with("error", "You are not authorized.");
+        }
+
         $rules = array(
             'id_category' => 'required',
             'title' => 'required|min_length[20]',
@@ -173,7 +181,6 @@ class UserPostController extends BaseController
 
         $requestData['mini_title'] = $this->request->getPost('mini_title');
         $requestData['slug'] = slug($this->request->getPost('mini_title'));
-        $requestData['id_user'] = session('id');
 
         $result = $this->postModel->update($id, $requestData);
 
@@ -188,6 +195,10 @@ class UserPostController extends BaseController
         $type = $this->request->getPost('type');
         $id = $this->request->getPost('id');
 
+        if (!$this->checkPostExistsBelongsToUser($id)) {
+            return redirect()->to('posts')->with("error", "You are not authorized.");
+        }
+
         $purge = false;
         $message = "Post has been soft deleted successfully";
         if ($type == 'permanent') {
@@ -200,8 +211,25 @@ class UserPostController extends BaseController
 
     public function undoDelete($id)
     {
+        if (!$this->checkPostExistsBelongsToUser($id)) {
+            return redirect()->to('posts')->with("error", "You are not authorized.");
+        }
         $this->postModel->update($id, array('deleted_at' => null));
         return redirect()->back()->with("success", "Post has been restored successfully");
+    }
+
+    public function checkPostExistsBelongsToUser($id)
+    {
+        $post = $this->postModel->find($id);
+        if (!$post) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        }
+
+        if ($post->id_user !== session('id')) {
+            return false;
+        }
+
+        return true;
     }
 
 }
