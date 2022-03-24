@@ -87,6 +87,7 @@ $routes->group('dashboard', ['filter' => 'admin'], function ($routes) {
     $routes->patch('users/(:num)', 'Admin\UserController::update/$1');
     $routes->delete('users', 'Admin\UserController::delete');
     $routes->get('users/export', 'ExcelController::export');
+    $routes->post('users/export-with-filters', 'ExcelController::exportWithFilters');
     $routes->post('users/import', 'ExcelController::import');
 
     $routes->get('posts', 'Admin\PostController::index');
