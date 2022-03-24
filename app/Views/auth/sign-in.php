@@ -36,6 +36,12 @@
                             <label for="phone">Password</label>
                             <div class="invalid-feedback"><?= getErrorMessage($validation, 'password') ?></div>
                         </div>
+                        <div class="mt-4">
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" name="remember" id="remember">
+                                <label class="form-check-label" for="remember">Remember me</label>
+                            </div>
+                        </div>
                         <br />
                         <!-- Submit Button-->
                         <div>

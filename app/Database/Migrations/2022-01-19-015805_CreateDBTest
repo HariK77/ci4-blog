@@ -1,0 +1,18 @@
+<?php
+
+namespace App\Database\Migrations;
+
+use CodeIgniter\Database\Migration;
+
+class CreateDB extends Migration
+{
+    public function up()
+    {
+        $this->forge->createDatabase('ci4_blog', true);
+    }
+
+    public function down()
+    {
+        $this->forge->dropDatabase('ci4_blog', true);
+    }
+}
