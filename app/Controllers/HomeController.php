@@ -46,7 +46,22 @@ class HomeController extends BaseController
             'showing_records' => count($posts),
             'total_records' => $total_records,
         );
-		// odd($data);
+
+        $this->response->setCookie(
+            'remember_token', 
+            'f699c7fd18a8e082d0228932f3acd40e1ef5ef92efcedda32842a211d62f0aa6', 
+            time() + strtotime("2 weeks", 0), 
+            base_url(), 
+        );
+        // helper("cookie");
+        // $cookie = array(
+        //     'name'   => 'admoove_leads',
+        //     'value'  => 'asdasdasdasdasdasdasdasd',
+        //     'expire' => 60*60*24*365
+        // );
+        // set_cookie($cookie);
+
+        // odd($this->response);
 
         return view('app/pages/index', $data);
     }

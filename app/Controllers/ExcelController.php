@@ -20,7 +20,7 @@ class ExcelController extends BaseController
 
 	public function export()
 	{
-		$users = $this->userModel->withDeleted()->findAll();
+		$users = $this->userModel->withDeleted()->withDefault()->findAll();
 
 		$spreadsheet = new Spreadsheet();
 

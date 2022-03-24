@@ -1,0 +1,31 @@
+App Installlation:
+    $ composer create-project codeigniter4/appstarter ci4-rest-api
+    $ composer update
+
+    $ cp env .env
+    $ sudo chmod -R 777 writable
+
+To make controller:
+    $ php spark make:controller TestController
+
+To make model:
+    $ php spark make:model Test
+
+To make migration file:
+    $ php spark make:migration User
+
+To create database:
+    $ php spark db:create ci4_blog
+
+To Migrate databases:
+    $ php spark migrate
+
+To seed db from a seeder class:
+    $ php spark db:seed TestSeeder
+
+To Rollback last migrations
+    $ php spark migrate:rollback
+    
+To Route List:
+   php spark routes
+

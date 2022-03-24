@@ -307,9 +307,11 @@
 
     uploadExcelBtn.addEventListener('click', () => {
 
-        uploadExcelBtn.disabled = true;
-
         document.getElementById('errors-display-btn').classList.add('d-none');
+        uploadExcelBtn.disabled = true;
+        const tbody = document.getElementById('errors-table-body');
+        tbody.innerHTML = '';
+
         let formData = new FormData();
 
         formData.append('file', document.getElementById('file').files[0]);
@@ -320,7 +322,6 @@
             // console.log(response);
             uploadExcelBtn.disabled = false;
             if (response.status === 400) {
-                const tbody = document.getElementById('errors-table-body');
 
                 response.messages.forEach((error, key) => {
                     let tr = document.createElement('tr');
