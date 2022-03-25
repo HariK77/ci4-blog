@@ -96,7 +96,8 @@ $routes->group('dashboard', ['filter' => 'admin'], function ($routes) {
     $routes->post('posts', 'Admin\PostController::store');
     $routes->get('posts/(:any)', 'Admin\PostController::show/$1');
     $routes->patch('posts/(:any)', 'Admin\PostController::update/$1');
-    $routes->delete('posts/(:any)', 'Admin\PostController::delete/$1');
+    $routes->delete('posts', 'Admin\PostController::delete');
+    $routes->post('posts/undo-delete', 'Admin\PostController::undoDelete');
 
 });
 

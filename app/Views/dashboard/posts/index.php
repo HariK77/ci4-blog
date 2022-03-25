@@ -27,7 +27,7 @@
         <div class="card-header">
             <div class="d-flex">
                 <h5>Posts</h5>
-                <button data-toggle="modal" data-target="#modal" class="btn btn-primary ml-auto" id="add-form">Add Post</button>
+                <!-- <button data-toggle="modal" data-target="#modal" class="btn btn-primary ml-auto" id="add-form">Add Post</button> -->
             </div>
         </div>
         <div class="card-body">
@@ -102,7 +102,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title mt-0" id="modalLabel"></h5>
+                    <h5 class="modal-title mt-0" id="modalLabel">Post Content</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 </div>
                 <div class="modal-body">
@@ -200,16 +200,16 @@
                     data: 'slug',
                     render: (data, type, row) => {
                         return `<button type="button" class="btn btn-primary waves-effect waves-light mo-mb-2" data-toggle="popover"
-                                        title="Post Url" data-placement="top" data-content="<?= base_url() ?>/${data}"><i class="fa fa-eye"></i></button>`
+                                        title="Post Url" data-placement="top" data-content="<?= base_url() ?>/${data}"><i class="fa fa-link"></i></button>`
                     }
                 },
                 {
                     title: 'Post Content',
                     data: 'post_content',
                     render: (data, type, row) => {
-                        let postContent = row.post_content.replaceAll('"', 'du_q');
-                        return `<button type="button" class="btn btn-primary waves-effect waves-light mo-mb-2" data-toggle="tooltip"
-                                        title="Post Url"><i class="fa fa-eye" onclick='showModal("test", "test2")'></i></button>`
+                        let postContent = row.post_content.replaceAll('"', 'dou_q').replaceAll("'", 'sin_q');
+                        return `<button type="button" class="btn btn-primary waves-effect waves-light mo-mb-2" data-toggle="tooltip" 
+                                onclick="showModal('${postContent}')" title="Post Url"><i class="fa fa-eye"></i></button>`
                     }
                 },
                 {
@@ -232,9 +232,15 @@
                     data: 'id',
                     render: (data, type, row) => {
                         // console.log(data, type, row);
-                        return `<button class="btn btn-success edit-category" data-id="${data}"><i class="fa fa-edit"></i></button>
-                        <button class="btn btn-danger delete-category" data-id="${data}"><i class="fa fa-trash"></i></button>`;
+                        // <button class="btn btn-success edit-category" data-id="${data}"><i class="fa fa-edit"></i></button>
+                        let btn = `<button data-toggle="tooltip" data-title="Delete Post" class="btn btn-warning delete-post" data-id="${data}"><i class="fa fa-trash"></i></button>`;
 
+                        if (row.deleted_at) {
+                            btn = `<button data-toggle="tooltip" data-title="Undo Delete"  class="btn btn-primary undo-delete" data-id="${data}"><i class="fas fa-undo-alt"></i></button>`
+                            btn += `<button data-toggle="tooltip" data-title="Permanent Delete Post"  class="btn btn-danger delete-post" data-id="${data}" data-type="permanent"><i class="fas fa-times-circle"></i></button>`;
+                        }
+
+                        return btn;
                     }
                 }
             ],
@@ -269,7 +275,7 @@
                         text: '<i class="fa fa-file-excel-o"></i> Export Excel',
                         titleAttr: 'Excel',
                         title: 'Posts Excel',
-                        className: 'excel-btn',
+                        className: 'excel-btn mr-2',
                         // footer: true,
                         // exportOptions: {
                         //     // columns: getColumns(),
@@ -412,24 +418,30 @@
         });
     });
 
-    $(document).on('click', '.delete-category', function() {
+    $(document).on('click', '.delete-post', function() {
 
         if (!confirm('Are you sure !')) return;
 
-        let categoryId = $(this).data('id');
+        let postId = $(this).data('id');
+        let type = $(this).data('type');
         let params = {
-            category_id: categoryId,
+            id: postId,
+            type: type,
             '<?= csrf_token() ?>': '<?= csrf_hash() ?>',
             _method: 'DELETE'
         }
 
         $.ajax({
             type: 'POST',
-            url: '<?= base_url('/dashboard/categories') ?>/' + categoryId,
+            url: '<?= base_url('/dashboard/posts') ?>',
             dataType: 'json',
             data: params,
             success: function(response) {
-                $('#datatable').dataTable().fnDraw(false);
+                if (response.status == 'success') {
+                    $('#datatable').dataTable().fnDraw(false);
+                } else {
+                    console.log('error', response);
+                }
             },
             error: function(response) {
                 alert('some error happened');
@@ -465,14 +477,39 @@
         }
     }
 
-    const showModal = (title, content = 'test') => {
-        content = row.content.replaceAll('du_q', '"');
+    const showModal = (content) => {
+        let postContent = content.replaceAll('dou_q', '"').replaceAll('sin_q', "'");
 
-        $('#post-content-modal').find('.modal-title').html(title);
-        $('#post-content-modal').find('.modal-body').html(content);
+        $('#post-content-modal').find('.modal-body').html(postContent);
 
-        $('#post-content-modal'),modal('toggle');
+        $('#post-content-modal').modal('toggle');
     }
+
+    $(document).on('click', '.undo-delete', function() {
+
+        let postId = $(this).data('id');
+        let params = {
+            id: postId,
+            '<?= csrf_token() ?>': '<?= csrf_hash() ?>',
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '<?= base_url('/dashboard/posts/undo-delete') ?>',
+            dataType: 'json',
+            data: params,
+            success: function(response) {
+                if (response.status == 'success') {
+                    $('#datatable').dataTable().fnDraw(false);
+                } else {
+                    console.log('error', response);
+                }
+            },
+            error: function(response) {
+                alert('some error happened');
+            }
+        });
+    });
 </script>
 
 <?= $this->endSection() ?>
