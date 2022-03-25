@@ -25,6 +25,7 @@ class ExcelController extends BaseController
 		$spreadsheet = new Spreadsheet();
 
 		$sheet = $spreadsheet->getActiveSheet();
+		$sheet->setTitle('Users');
 		$sheet->setCellValue('A1', 'Id');
 		$sheet->setCellValue('B1', 'Name');
 		$sheet->setCellValue('C1', 'Email');
@@ -55,6 +56,17 @@ class ExcelController extends BaseController
 			$sheet->setCellValue('H' . $rows, formatDate($user->deleted_at, 1));
 			$rows++;
 		}
+
+		$spreadsheet->getProperties()
+					->setCreator(session('name'))
+					->setLastModifiedBy(session('name'))
+					->setTitle("Users List")
+					->setSubject("Details of all users in Ci4 blog")
+					->setDescription(
+						"Go through all the details of users in Ci4 blog"
+					)
+					->setKeywords("blog ci4-blog excel")
+					->setCategory("List");
 
 		$writer = new Xlsx($spreadsheet);
 		$filePath = 'uploads/users_'. time() .'.xlsx';
@@ -81,6 +93,7 @@ class ExcelController extends BaseController
 		$spreadsheet = new Spreadsheet();
 
 		$sheet = $spreadsheet->getActiveSheet();
+		$sheet->setTitle('Users');
 		$sheet->setCellValue('A1', 'Id');
 		$sheet->setCellValue('B1', 'Name');
 		$sheet->setCellValue('C1', 'Email');
@@ -111,6 +124,17 @@ class ExcelController extends BaseController
 			$sheet->setCellValue('H' . $rows, formatDate($user->deleted_at, 1));
 			$rows++;
 		}
+
+		$spreadsheet->getProperties()
+					->setCreator(session('name'))
+					->setLastModifiedBy(session('name'))
+					->setTitle("Users List")
+					->setSubject("Details of all users in Ci4 blog")
+					->setDescription(
+						"Go through all the details of users in Ci4 blog"
+					)
+					->setKeywords("blog ci4-blog excel")
+					->setCategory("List");
 
 		$writer = new Xlsx($spreadsheet);
 		ob_start();

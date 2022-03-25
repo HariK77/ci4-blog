@@ -57,9 +57,10 @@
             </div>
         </div>
         <div class="col-md-3">
-            <label for="search">Add Users with Excel</label>
+            
             <div class="form-group">
-                <input class="form-control" type="file" name="file" id="file" value="" placeholder="Upload excel">
+                <label for="search">Add Users with Excel</label>
+                <input class="filestyle" type="file" name="file" id="file" value="" data-buttonname="btn-secondary" placeholder="Upload excel">
             </div>
         </div>
         <div class="col-md-3">
@@ -178,6 +179,8 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('js') ?>
+
+<script src="<?= base_url('dboard/plugins/bootstrap-filestyle/js/bootstrap-filestyle.min.js') ?>"></script>
 
 <script>
     $(document).ready(function() {

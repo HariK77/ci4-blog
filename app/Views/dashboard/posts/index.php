@@ -37,6 +37,7 @@
             </div>
         </div>
     </div>
+    <!-- Add/edit modal -->
     <div id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -46,9 +47,10 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
+                        <div class="col-md-12">
                         <form action="<?= base_url('posts') ?>" method="POST" enctype="multipart/form-data">
                             <?= csrf_field() ?>
-                            <div class="form-floating-select">
+                            <div class="form-group">
                                 <label for="id_category">Select Category</label>
                                 <select class="form-control" id="id_category" name="id_category" type="select" placeholder="Select category...">
                                     <option selected disabled value="">Choose...</option>
@@ -59,20 +61,20 @@
                                 <div class="invalid-feedback"></div>
                             </div>
                             <div class="form-floating">
-                                <input class="form-control" id="title" name="title" type="text" placeholder="Enter your title..." />
                                 <label for="title">Title</label>
+                                <input class="form-control" id="title" name="title" type="text" placeholder="Enter your title..." />
                                 <div class="invalid-feedback"></div>
                             </div>
                             <div class="form-floating">
-                                <input class="form-control" id="sub_title" name="sub_title" type="text" placeholder="Enter your mini title..." />
                                 <label for="sub_title">Mini Title</label>
+                                <input class="form-control" id="sub_title" name="sub_title" type="text" placeholder="Enter your mini title..." />
                                 <div class="invalid-feedback"></div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6 py-5">
                                     <div class="form-floating">
-                                        <input class="form-control" id="header_image" name="header_image" onchange="readURL(this, 'preview_image');" accept='image/*' type="file" placeholder="Upload image" />
                                         <label for="header_image">Header Image</label>
+                                        <input class="form-control" id="header_image" name="header_image" onchange="readURL(this, 'preview_image');" accept='image/*' type="file" placeholder="Upload image" />
                                         <div class="invalid-feedback"></div>
                                     </div>
                                 </div>
@@ -86,10 +88,29 @@
                                 <div class="invalid-feedback"></div>
                             </div>
                     </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-primary waves-effect waves-light" id="save-btn">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Show post -->
+    <div id="post-content-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title mt-0" id="modalLabel"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+                <div class="modal-body">
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
+                    <!-- <button type="button" class="btn btn-primary waves-effect waves-light" id="save-btn">Add</button> -->
                 </div>
             </div>
         </div>
@@ -178,14 +199,17 @@
                     title: 'Url',
                     data: 'slug',
                     render: (data, type, row) => {
-                        return `show`;
+                        return `<button type="button" class="btn btn-primary waves-effect waves-light mo-mb-2" data-toggle="popover"
+                                        title="Post Url" data-placement="top" data-content="<?= base_url() ?>/${data}"><i class="fa fa-eye"></i></button>`
                     }
                 },
                 {
                     title: 'Post Content',
                     data: 'post_content',
                     render: (data, type, row) => {
-                        return `show`;
+                        let postContent = row.post_content.replaceAll('"', 'du_q');
+                        return `<button type="button" class="btn btn-primary waves-effect waves-light mo-mb-2" data-toggle="tooltip"
+                                        title="Post Url"><i class="fa fa-eye" onclick='showModal("test", "test2")'></i></button>`
                     }
                 },
                 {
@@ -310,10 +334,13 @@
                 // }
             },
             initComplete: function(Settings, json) {
-
+                $('[data-toggle="popover"]').popover();
+                $('[data-toggle="tooltip"]').tooltip({
+                    trigger: 'hover'
+                });
             },
             fnDrawCallback: function(oSettings) {
-                console.log(oSettings);
+                // console.log(oSettings);
             },
 
         });
@@ -436,6 +463,15 @@
         } else {
             $("#save-btn").text('Add');
         }
+    }
+
+    const showModal = (title, content = 'test') => {
+        content = row.content.replaceAll('du_q', '"');
+
+        $('#post-content-modal').find('.modal-title').html(title);
+        $('#post-content-modal').find('.modal-body').html(content);
+
+        $('#post-content-modal'),modal('toggle');
     }
 </script>
 

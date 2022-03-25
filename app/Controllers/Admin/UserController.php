@@ -107,7 +107,7 @@ class UserController extends BaseController
 
     public function edit($id)
     {
-        $user = $this->userModel->find($id);
+        $user = $this->userModel->withDeleted()->find($id);
         $validation = $this->validation;
         return view('dashboard/users/edit', compact('user', 'validation'));
     }
