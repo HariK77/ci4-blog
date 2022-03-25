@@ -45,6 +45,7 @@ class PostController extends BaseController
 
         if ($search['value']) {
             $records = $this->postModel
+                            ->withDeleted()
                             ->withUserAndCategory()
                             ->withSearch($search['value'])
                             ->orderBy($columns[$orderBy[0]['column']], $orderBy[0]['dir'])
@@ -52,19 +53,21 @@ class PostController extends BaseController
 
             $showingRecords = count($records);
             $totalRecords = $this->postModel
+                                ->withDeleted()
                                 ->withUserAndCategory()
                                 ->withSearch($search['value'])
                                 ->orderBy($columns[$orderBy[0]['column']], $orderBy[0]['dir'])
                                 ->countAllResults();
         } else {
             $records = $this->postModel
+                            ->withDeleted()
                             ->withUserAndCategory()
                             ->orderBy($columns[$orderBy[0]['column']], $orderBy[0]['dir'])
                             ->findAll($length, $start);
             // odd($this->postModel->getLastQuery()->getQuery());
 
             $showingRecords = count($records);
-            $totalRecords = $this->postModel->countAllResults();
+            $totalRecords = $this->postModel->withDeleted()->countAllResults();
         }
 
         $result = array(
@@ -103,8 +106,55 @@ class PostController extends BaseController
         dd($this->request->getPost());
     }
 
-    public function delete($id)
+    public function delete()
     {
-        dd($id);
+        // odd($this->request->getPost());
+        $type = $this->request->getPost('type');
+        $id = $this->request->getPost('id');
+
+        $purge = false;
+        $message = "Post has been soft deleted successfully";
+        if ($type == 'permanent') {
+            $purge = true;
+            $message = "Post has been deleted permanently";
+        }
+        $result = $this->postModel->delete($id, $purge);
+        if ($result) {
+            $response = [
+                'status' => 'success',
+                'message' => $message
+            ];
+            return $this->respondDeleted($response);
+        }
+
+        $response = [
+            'status' => 'error',
+            'message' => 'Unable to delete post'
+        ];
+
+        return $this->respondDeleted($response);
+    }
+
+    public function undoDelete()
+    {
+        $id = $this->request->getPost('id');
+        $post = $this->postModel->withdeleted()->find($id);
+
+        $result = $this->postModel->update($id, array('deleted_at' => null));
+
+        if ($result) {
+            $response = [
+                'status' => 'success',
+                'message' => 'Post restored successfully'
+            ];
+            return $this->respondDeleted($response);
+        }
+
+        $response = [
+            'status' => 'error',
+            'message' => 'Unable to restore post'
+        ];
+
+        return $this->respond($response);
     }
 }
