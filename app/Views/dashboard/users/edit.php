@@ -67,6 +67,16 @@
                     </div>
                 </div>
                 <div class="form-group row">
+                    <label for="confirm_password" class="col-sm-2 col-form-label">Is Deleted</label>
+                    <div class="col-sm-6">
+                    <?php if ($user->deleted_at) : ?>
+                        Yes
+                    <?php else : ?>
+                        No
+                    <?php endif ?>
+                    </div>
+                </div>
+                <div class="form-group row">
                     <div class="col-sm-8">
                         <button class="btn btn-primary float-right" type="submit">Update</button>
                     </div>
