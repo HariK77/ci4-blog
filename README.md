@@ -1,6 +1,6 @@
 # Ci4 Blog
 
-This is simple blog app, made with [CodeIgniter4](http://codeigniter.com) framework and bootstrap5 html theme [Clean Blog](https://startbootstrap.com/theme/clean-blog). It has authentication, posts crud, pagination, server side datatables, email sending, populating fake data and admin dashboard etc., new features will be implemented soon.
+This is simple blog app, made with [CodeIgniter4](http://codeigniter.com) framework and bootstrap5 html theme [Clean Blog](https://startbootstrap.com/theme/clean-blog). It has authentication, posts crud, pagination, server side datatables, email sending, populating fake data, exporting and importing excel and admin dashboard etc., new features will be implemented soon.
 
 ## Test Demo of the app
 https://hari.goinstaweb.com/
@@ -36,13 +36,11 @@ If any issues in installation visit this page
 - Note: even if you don't set `app.mail.smtpUser`, `app.mail.smtpPass`, app will work, but u won't be able to check some email related functionalities.
 - set database configurations in .env and create a db named `ci4_blog`.
 - create database and run `$ php spark migrate`.
-- create dummy data in user table with `$ php spark db:seed UserSeeder`.
-- create dummy data in category table with `$ php spark db:seed CategorySeeder`.
-- create dummy data in posts table with `$ php spark db:seed PostSeeder`.
-- Open `http://localhost/ci4-blog/public` to make sure, whether it is working.
+- create dummy data in user table with `$ php spark db:seed BaseSeeder`.
+- Open `http://localhost/ci4-blog/public` u should see a home page with dummy posts.
 
 ## How to use the application
-
+Go to `http://localhost/ci4-blog/public/login` and login with below credentials <br>
 - Admin User Credentials: <br>
     Username: `admin@admin.com`<br>
     Password: `admin@123`

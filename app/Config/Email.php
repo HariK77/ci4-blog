@@ -175,6 +175,7 @@ class Email extends BaseConfig
 		$this->SMTPPort = getenv('app.mail.smtpPort');
 		$this->SMTPUser = getenv('app.mail.smtpUser');
 		$this->SMTPPass = getenv('app.mail.smtpPass');
+        $this->SMTPCrypto = getenv('app.mail.smtpEncrption') ?? 'ssl';
 		$this->fromEmail = getenv('app.mail.fromEmail');
 		$this->fromName = getenv('app.name');
 		$this->mailType = getenv('app.mail.mailType');
