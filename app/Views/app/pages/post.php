@@ -1,6 +1,6 @@
 <?= $this->extend('layouts/app') ?>
 
-<?= $this->section('title') ?>Blog Title<?= $this->endSection() ?>
+<?= $this->section('title') ?><?= $post->title ?><?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
 
