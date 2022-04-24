@@ -77,7 +77,7 @@ class User extends Model
     public function deleted($deleted)
     {
         if ($deleted === 'yes') {
-            $this->builder()->where('deleted_at !=', '');
+            $this->builder()->where('deleted_at IS NOT NULL');
         } elseif($deleted === 'no') {
             $this->builder()->where('deleted_at', null);
         }
